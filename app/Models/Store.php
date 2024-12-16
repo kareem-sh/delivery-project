@@ -4,26 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
 
 class Store extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
-     public function owner(){
+    use HasFactory,Notifiable;
+    protected $fillable = [
+        'user_id',
+        'name',
+        'latitude',
+        'longitude',
+        'image',
+        'logo_color',
+    ];
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+    public function user()
+    {
         return $this->belongsTo(User::class);
-     }
-
-     public function products(){
-      return $this->hasMany(Product::class);
-     }
-
+    }
 }

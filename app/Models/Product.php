@@ -31,6 +31,6 @@ class Product extends Model
     }
     public function users()
     {
-        $this->belongsToMany(User::class,'favorites');
+        return $this->belongsToMany(User::class,'favorites','product_id','user_id');
     }
 }

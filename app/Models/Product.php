@@ -4,22 +4,33 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
+
 class Product extends Model
 {
-  /** @use HasFactory<\Database\Factories\UserFactory> */
-  use HasFactory, Notifiable;
-
-  /**
-   * The attributes that are mass assignable.
-   *
-   * @var array<int, string>
-   */   
-  public function store(){
-    return $this->belongsTo(Store::class);
-  }
-
-  public function favorites(){
-    return $this->belongsToMany(User::class,'favorites','product_id','user_id');
-  }
+    use HasFactory;
+    protected $fillable = [
+        'store_id',
+        'category_id',
+        'name',
+        'description',
+        'price',
+        'stock_quantity',
+        'image_url',
+        'delivery_period',
+        'discount_value',
+        'discount_start',
+        'discount_end',
+    ];
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+    public function users()
+    {
+        $this->belongsToMany(User::class,'favorites');
+    }
 }

@@ -63,8 +63,7 @@ class User extends Authenticatable
         return $this->belongsToMany(Product::class,'favorites','user_id','product_id');
     }
 
-    public function ToggleToFavorities($product_id){
-        $product = Product::find($product_id);
-        $this->favorites()->toggle($product);
+    public function toggle_to_favorites($product_ids){
+        $this->favorites()->toggle($product_ids);
     }
 }

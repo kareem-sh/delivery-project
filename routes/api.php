@@ -22,9 +22,13 @@ Route::prefix('/auth')->group(function () {
     Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 });
 
-Route::apiResource('/users',UserController::class)->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::apiResource('users',UserController::class);
+    Route::apiResource('/users',UserController::class);
+    Route::post('users/toggle_favorites', [UserController::class, 'toggle_favorites']);
+    Route::get('users/favorites', [UserController::class, 'favorites']);
+});
+Route::apiResource('/users',UserController::class)->middleware('auth:sanctum');
 
 Route::apiResource('stores',StoreController::class)->middleware('auth:sanctum');
 Route::controller(StoreController::class)->group(function(){
@@ -44,4 +48,4 @@ Route::controller(ProductController::class)->group(function(){
 })->middleware('auth:sanctum');
 
 
-Route::apiResource('favorites',FavoriteController::class)->middleware('auth:sanctum');
+

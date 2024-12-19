@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateFavoriteRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -164,5 +165,17 @@ class UserController extends Controller
         return response()->json([
             'message' => 'user deleted successfully'
         ], 200);
+    }
+
+    public function toggle_favorites(CreateFavoriteRequest $request)
+    {
+        $this->authorize('update',Auth::user());
+        $product_ids = $request->input('product_id');
+        Auth::user()->toggle_to_favorities($product_ids);
+        return response()->json(['message' => 'Favorites toggled successfully'],200);
+    }
+
+    public function favorites(){
+        return Auth::user()->favorites;
     }
 }

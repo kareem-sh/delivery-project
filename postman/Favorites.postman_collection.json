@@ -1,0 +1,103 @@
+{
+	"info": {
+		"_postman_id": "6ff892e7-2299-4c84-8280-7973d4229910",
+		"name": "Favorites",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38928530"
+	},
+	"item": [
+		{
+			"name": "All Favorites",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products/show",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"show"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Favorite",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_id\":2,\r\n    \"product_id\":10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}favorites",
+					"host": [
+						"{{URL}}favorites"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Favorite",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}favorites/5",
+					"host": [
+						"{{URL}}favorites"
+					],
+					"path": [
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

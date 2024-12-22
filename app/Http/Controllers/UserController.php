@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateFavoriteRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -16,9 +15,6 @@ use Illuminate\Support\Facades\Gate;
 class UserController extends Controller
 {
     use AuthorizesRequests;
-    /**
-     * Display a listing of the resource.
-     */
     protected $twilioService;
 
     public function __construct(TwilioService $twilioService)
@@ -35,11 +31,6 @@ class UserController extends Controller
 
         return User::paginate(25);
     }
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(CreateUserRequest $request)
     {
         $this->authorize('create',User::class);
@@ -50,10 +41,6 @@ class UserController extends Controller
             'User' => $user,
         ]);
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $user = User::find($id);
@@ -65,10 +52,6 @@ class UserController extends Controller
             'user' => $user
         ]);
     }
-    /**
-     * Update the specified resource in storage.
-     */
-
     public function update(UpdateUserRequest $request, $id)
     {
         $user = User::find($id);
@@ -76,7 +59,7 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        $this->authorize('update', $user); 
+        $this->authorize('update', $user);
 
         $data = $request->validated();
         $user->update($data);
@@ -165,17 +148,5 @@ class UserController extends Controller
         return response()->json([
             'message' => 'user deleted successfully'
         ], 200);
-    }
-
-    public function toggle_favorites(CreateFavoriteRequest $request)
-    {
-        $this->authorize('update',Auth::user());
-        $product_ids = $request->input('product_id');
-        Auth::user()->toggle_to_favorities($product_ids);
-        return response()->json(['message' => 'Favorites toggled successfully'],200);
-    }
-
-    public function favorites(){
-        return Auth::user()->favorites;
     }
 }

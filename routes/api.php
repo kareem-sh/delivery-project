@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Models\User;
-
+use App\Http\Controllers\FcmController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
@@ -47,5 +47,4 @@ Route::controller(ProductController::class)->group(function(){
     Route::post('products/update/{id}','updateProduct');
 })->middleware('auth:sanctum');
 
-
-
+Route::get('/notifications', [FcmController::class, 'getNotifications'])->middleware('auth:sanctum');

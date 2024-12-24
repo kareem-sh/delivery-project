@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+class Notification extends Model
+{
+    use HasFactory;
+    protected $table = 'notifications';
+
+    protected $fillable = [
+        'type', // Type of notification
+        'notifiable_type', // The type of the notifiable entity
+        'notifiable_id', // The ID of the notifiable entity
+        'data', // JSON data for the notification
+        'read_at', // Timestamp for when the notification was read
+    ];
+    public function notifiable()
+    {
+        return $this->morphTo(); 
+    }
+}

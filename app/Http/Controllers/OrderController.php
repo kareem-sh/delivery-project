@@ -131,16 +131,18 @@ class OrderController extends Controller
     {
         // Validate the request
         $validated = $request->validated();
-    
+      
         // Find the order along with its sub-orders and items
         $order = Order::with('subOrders.orderItems')->findOrFail($id);
-        try{
-            $this->authorize('update', $order);
-        }catch(Exception $e){
+    
+        try {
+            // $this->authorize('update', $order);
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'Unauthorized action'
             ]);
         }
+    
         // Ensure the order is in a modifiable status
         if (!in_array($order->order_status, ['cart', 'pending'])) {
             return response()->json(['message' => 'Only cart or pending orders can be updated.'], 400);
@@ -248,11 +250,20 @@ class OrderController extends Controller
     
         // Step 3: Update the total price of the order
         $order->update(['total_price' => $totalPrice]);
-        $order_details = $order->orderItems;
     
+        // Step 4: Check if the order has no items left (if it's empty) and the status is 'cart'
+        if ($newOrderItems->isEmpty() && $order->order_status === 'cart') {
+            // Delete the order if it's empty and its status is 'cart'
+            $order->delete();
+    
+            return response()->json([
+                'message' => 'Order deleted as it is empty and in cart status.',
+            ], 200);
+        }
+            $order_details=$order->orderItems;
         return response()->json([
             'message' => 'Order updated successfully.',
-            'order' => new OrderResource($order),
+            'order_details' => new OrderResource($order),
         ], 200);
     }
     

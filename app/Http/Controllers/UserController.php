@@ -140,26 +140,29 @@ class UserController extends Controller
     public function getUserOrders(Request $request)
     {
         $user = Auth::user();
-
+    
         $status = $request->query('status'); 
         $sort = $request->query('sort', 'newest'); 
-
+    
         $query = Order::where('user_id', $user->id);
-
-        if ($status) {
+    
+        // Exclude 'cart' status
+        if ($status && $status !== 'cart') {
             $query->where('order_status', $status);
         }
-
+    
+        // Sorting
         if ($sort === 'oldest') {
             $query->oldest(); 
         } else {
             $query->latest(); 
         }
-
+    
         $orders = $query->with('orderItems.product')->get();
-
+    
         return response()->json([
             'orders' => OrderResource::collection($orders)
         ]);
     }
+    
 }

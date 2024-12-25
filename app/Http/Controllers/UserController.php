@@ -30,7 +30,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            // $this->authorize('view', User::class);
+            $this->authorize('view', User::class);
         } catch (Exception $e) {
             return response()->json(['message' => 'This action is unauthorized.'], 401);
         }
@@ -140,7 +140,11 @@ class UserController extends Controller
     public function getUserOrders(Request $request)
     {
         $user = Auth::user();
-    
+        try {
+            $this->authorize('update', $user);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'This action is unauthorized.'], 401);
+        }
         $status = $request->query('status'); 
         $sort = $request->query('sort', 'newest'); 
     
@@ -158,8 +162,12 @@ class UserController extends Controller
             $query->latest(); 
         }
     
-        $orders = $query->with('orderItems.product')->get();
-    
+        $orders = $query->where('order_status','!=','cart')->with('orderItems.product')->get();
+        if ($orders->isEmpty()) {
+            return response()->json([
+                'message' => 'There are no orders yet.'
+            ]);
+        }
         return response()->json([
             'orders' => OrderResource::collection($orders)
         ]);

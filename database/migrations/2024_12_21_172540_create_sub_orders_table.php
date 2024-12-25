@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Foreign key to orders
             $table->foreignId('store_id')->constrained()->onDelete('cascade'); // Foreign key to stores
             $table->decimal('sub_total', 10, 2)->default(0); // Sub-order total price
-            $table->enum('order_status', ['cart', 'pending', 'preparing', 'on_the_way','delivered', 'canceled'])->default('cart');
+            $table->enum('order_status', ['cart', 'pending', 'preparing', 'on the way','delivered', 'canceled'])->default('cart');
 
             $table->timestamps();
         });

@@ -17,7 +17,7 @@ class SubOrderFactory extends Factory
             'order_id' => Order::factory(),
             'store_id' => Store::factory(),
             'sub_total' => $this->faker->randomFloat(2, 10, 500),
-            'order_status' => $this->faker->randomElement(['cart', 'pending', 'preparing', 'on_the_way','delivered', 'canceled']),
+            'order_status' => $this->faker->randomElement(['cart', 'pending', 'preparing', 'on the way','delivered', 'canceled']),
         ];
     }
 }

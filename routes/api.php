@@ -1,19 +1,12 @@
 <?php
 
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Models\User;
-
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
-
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
 
 Route::prefix('/auth')->group(function () {
     Route::post('/handleRequest', [AuthController::class, 'handleRequest']);
@@ -22,12 +15,6 @@ Route::prefix('/auth')->group(function () {
     Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-
-    Route::apiResource('/users',UserController::class);
-    Route::post('users/toggle_favorites', [UserController::class, 'toggle_favorites']);
-    Route::get('users/favorites', [UserController::class, 'favorites']);
-});
 Route::apiResource('/users',UserController::class)->middleware('auth:sanctum');
 
 Route::apiResource('stores',StoreController::class)->middleware('auth:sanctum');
@@ -47,5 +34,9 @@ Route::controller(ProductController::class)->group(function(){
     Route::post('products/update/{id}','updateProduct');
 })->middleware('auth:sanctum');
 
-
+Route::apiResource('orders',OrderController::class)->middleware('auth:sanctum');
+Route::controller(OrderController::class)->group(function(){
+    Route::get('orders/submit/{id}','submit');
+    Route::get('/orders/cart','cart');
+})->middleware('auth:sanctum');
 

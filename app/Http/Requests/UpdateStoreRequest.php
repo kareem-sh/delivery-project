@@ -18,7 +18,7 @@ class UpdateStoreRequest extends FormRequest
             "name"=>"sometimes|max:255",
             "latitude"=>"sometimes",
             "longitude"=>"sometimes",
-            "image"=>"sometimes|image|mimes:jpeg,png,jpg",
+            "image"=>"sometimes",
             "logo_color"=>"sometimes|max:10",
         ];
     }

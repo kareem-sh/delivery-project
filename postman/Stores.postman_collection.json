@@ -1,0 +1,268 @@
+{
+	"info": {
+		"_postman_id": "8b9515a7-e536-4ed2-a052-8e962cd40a73",
+		"name": "Stores",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38928530"
+	},
+	"item": [
+		{
+			"name": "All Stores",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}stores",
+					"host": [
+						"{{URL}}stores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "One Store",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}stores/3",
+					"host": [
+						"{{URL}}stores"
+					],
+					"path": [
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Products Store As Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}stores/3/products/mobiles",
+					"host": [
+						"{{URL}}stores"
+					],
+					"path": [
+						"3",
+						"products",
+						"mobiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}search/sa",
+					"host": [
+						"{{URL}}search"
+					],
+					"path": [
+						"sa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Store",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "samatel",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "latitude",
+							"value": "23.3434",
+							"type": "text"
+						},
+						{
+							"key": "longitude",
+							"value": "23.34235",
+							"type": "text"
+						},
+						{
+							"key": "logo_color",
+							"value": "blue",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}stores",
+					"host": [
+						"{{URL}}stores"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Store",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "gfhfh sam",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "latitude",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "longitude",
+							"value": "8.09",
+							"type": "text"
+						},
+						{
+							"key": "logo_color",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}stores/update/5",
+					"host": [
+						"{{URL}}stores"
+					],
+					"path": [
+						"update",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Store",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}stores/7",
+					"host": [
+						"{{URL}}stores"
+					],
+					"path": [
+						"7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

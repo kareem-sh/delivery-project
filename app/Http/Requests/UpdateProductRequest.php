@@ -21,9 +21,9 @@ class UpdateProductRequest extends FormRequest
             "description"=>"sometimes|max:65535",
             "price"=>"sometimes|numeric",
             "stock_quantity"=>"sometimes|numeric",
-            "image_url"=>"sometimes|image|mimes:jpeg,png,jpg",
+            "image_url"=>"sometimes",
             "delivery_period"=>"sometimes",
-            "discount_value"=>"nullable|numeric",
+            "discount_value"=>"nullable|numeric|min:1|max:100",
             "discount_start"=>"nullable|date",
             "discount_end"=>"nullable|date|after:discount_start",
         ];

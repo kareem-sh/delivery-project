@@ -1,0 +1,318 @@
+{
+	"info": {
+		"_postman_id": "336214c1-4210-4710-9ec8-8bb674c45eea",
+		"name": "Products",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "38928530"
+	},
+	"item": [
+		{
+			"name": "Products By Category",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products/category/laptop",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"category",
+						"laptop"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "One Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products/2",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Offers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products.offer",
+					"host": [
+						"{{URL}}products",
+						"offer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Price Range",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products/range/30/433",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"range",
+						"30",
+						"433"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}products/2",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "store_id",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "category_id",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "skjhk",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "ddfgnv,m",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "4374",
+							"type": "text"
+						},
+						{
+							"key": "stock_quantity",
+							"value": "43",
+							"type": "text"
+						},
+						{
+							"key": "image_url",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "discount_value",
+							"value": "23",
+							"type": "text"
+						},
+						{
+							"key": "discount_start",
+							"value": "2024-12-03",
+							"type": "text"
+						},
+						{
+							"key": "discount_end",
+							"value": "2025-12-03",
+							"type": "text"
+						},
+						{
+							"key": "delivery_period",
+							"value": "5 days",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}products",
+					"host": [
+						"{{URL}}products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Product",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "store_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "category_id",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "ffff",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "6",
+							"type": "text"
+						},
+						{
+							"key": "stock_quantity",
+							"value": "33",
+							"type": "text"
+						},
+						{
+							"key": "image_url",
+							"type": "file",
+							"src": []
+						},
+						{
+							"key": "discount_value",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "discount_start",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "discount_end",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "delivery_period",
+							"value": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{URL}}products/update/8",
+					"host": [
+						"{{URL}}products"
+					],
+					"path": [
+						"update",
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

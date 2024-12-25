@@ -14,8 +14,7 @@ class CreateFavoriteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'required',  
-            'product_id.*' => 'integer|exists:products,id',
+            'product_id'=>"required|numeric"
         ];
     }
 }

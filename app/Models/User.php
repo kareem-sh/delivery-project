@@ -12,12 +12,6 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'full_name',
         'phone_number',
@@ -33,22 +27,10 @@ class User extends Authenticatable
         'allow_gps',
         'allow_notifications'
     ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -59,11 +41,15 @@ class User extends Authenticatable
     public function store(){
        return $this->hasOne(Store::class);
     }
+    public function orders(){
+        return $this->hasMany(Order::class);
+     }
     public function favorites(){
         return $this->belongsToMany(Product::class,'favorites','user_id','product_id');
     }
 
-    public function toggle_to_favorites($product_ids){
-        $this->favorites()->toggle($product_ids);
+    public function ToggleToFavorities($product_id){
+        $product = Product::find($product_id);
+        $this->favorites()->toggle($product);
     }
 }

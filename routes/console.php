@@ -37,3 +37,4 @@ Schedule::call(function () {
 })->everyMinute();
 })->purpose('Display an inspiring quote');
 
+

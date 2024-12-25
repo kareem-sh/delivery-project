@@ -39,11 +39,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('stores/{id}/products/{name}', 'ProductsAsCategory');
         Route::post('stores/update/{id}', 'updateStore');
         Route::get('search/{prefix}', 'search');
-    });
+    })->middleware('auth:sanctum');
 
-    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('categories', CategoryController::class)->middleware('auth:sanctum');
 
-    Route::apiResource('products', ProductController::class);
+    Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');
     Route::controller(ProductController::class)->group(function () {
         Route::get('products/category/{name}', 'category');
         Route::get('products/offer', 'offer');

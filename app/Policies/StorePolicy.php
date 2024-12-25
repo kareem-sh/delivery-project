@@ -41,7 +41,7 @@ class StorePolicy
      */
     public function update(User $user, Store $store): bool
     {
-        return $user->role =='store_manager' && $user->id == $store->owner->id;
+        return $user->role =='admin' ;
     }
 
     /**
@@ -49,7 +49,7 @@ class StorePolicy
      */
     public function delete(User $user, Store $store): bool
     {
-        return $user->role =='store_manager' && $user->id == $store->owner->id;
+        return $user->role =='admin';
     }
 
     /**

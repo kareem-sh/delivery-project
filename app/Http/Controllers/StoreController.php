@@ -7,65 +7,58 @@ use App\Http\Requests\UpdateStoreRequest;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
+use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
-    public function index(Request $request)
+    use AuthorizesRequests;
+    public function index()
     {
+        $this->authorize('viewAny',User::class);
         $stores=Store::all();
         return $stores;
     }
     public function store(CreateStoreRequest $request)
     {
-        if($request->user()->role=="admin")
+        $this->authorize('create',User::class);
+        $data=$request->validated();
+        if($request->hasFile('image'))
         {
             $image=str::random(32).".".$request->image->getClientOriginalExtension();
-            Store::create([
-                "user_id"=>$request->user()->id,
-                "name"=>$request->name,
-                "latitude"=>$request->latitude,
-                "longitude"=>$request->longitude,
-                "image"=>$image,
-                "logo_color"=>$request->logo_color,
-            ]);
-            Storage::disk('public')->put($image,file_get_contents($request->image));
+             Storage::disk('public')->put($image,file_get_contents($request->image));
         }
+        $data->image=$image;
+        Store::create([
+            "user_id"=>$request->user()->id,
+            $data
+        ]);
     }
     public function show(Store $store)
     {
+        $this->authorize('view',[User::class,$store]);
         return $store;
     }
     public function updateStore(UpdateStoreRequest $request,$id)
     {
-        if($request->user()->role=="admin")
+        $store=Store::find($id);
+        $this->authorize('update',[User::class,$store]);
+        $data = $request->validated();
+        if($request->hasFile('image'))
         {
-            $store=Store::find($id);
-            if($request->image)
-            {
-                $image=str::random(32).".".$request->image->getClientOriginalExtension();
-                Storage::disk('public')->put($image,file_get_contents($request->image));
-                $store->image=$image;
-            }
-            if($request->name)
-                $store->name=$request->name;
-            if($request->latitude)
-                $store->latitude=$request->latitude;
-            if($request->longitude)
-                $store->longitude=$request->longitude;
-            if($request->logo_color)
-                $store->logo_color=$request->logo_color;
-            $store->save();
+            $image=str::random(32).".".$request->image->getClientOriginalExtension();
+            Storage::disk('public')->put($image,file_get_contents($request->image));
         }
+        $data->image=$image;
+        $store->update($data);
     }
-    public function destroy(Request $request,Store $store)
+    public function destroy(Store $store)
     {
-        if($request->user()->role=="admin")
-        {
-            $store->delete();
-        }
+        $this->authorize('delete',[User::class,$store]);
+        $store->delete();
     }
     public function ProductsAsCategory($id,string $name)
     {
@@ -73,7 +66,6 @@ class StoreController extends Controller
         $products=Product::where('category_id',$category->id)->where('store_id',$id)->get();
         return $products;
     }
-
     public function search(string $prefix)
     {
         $stores=Store::where('name','LIKE',$prefix.'%')->get();

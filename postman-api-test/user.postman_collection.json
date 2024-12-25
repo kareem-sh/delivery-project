@@ -1,0 +1,910 @@
+{
+	"info": {
+		"_postman_id": "9db1241b-aca8-4083-80da-77afee09800f",
+		"name": "user",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "39066757"
+	},
+	"item": [
+		{
+			"name": "get Users",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/users",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "get Users",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 18:44:50 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"data\": [\n        {\n            \"id\": 1,\n            \"full_name\": \"Gaylord Osinski\",\n            \"phone_number\": \"+1 (831) 668-7912\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"22.1729510\",\n            \"longitude\": \"148.5674130\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 2,\n            \"full_name\": \"Dr. Diamond Klocko\",\n            \"phone_number\": \"(484) 760-9060\",\n            \"lang\": \"ar\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"49.9211720\",\n            \"longitude\": \"-118.0503500\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 3,\n            \"full_name\": \"Ole Tillman\",\n            \"phone_number\": \"+12482272764\",\n            \"lang\": \"en\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"12.9819300\",\n            \"longitude\": \"-58.1859630\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 4,\n            \"full_name\": \"Elaina Hagenes\",\n            \"phone_number\": \"+1 (979) 862-5433\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"15.5390370\",\n            \"longitude\": \"-96.1696250\",\n            \"theme_mode\": \"light\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 5,\n            \"full_name\": \"Braeden Toy\",\n            \"phone_number\": \"+1-931-748-6724\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"-64.0721350\",\n            \"longitude\": \"39.2971470\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 6,\n            \"full_name\": \"Narciso Monahan\",\n            \"phone_number\": \"+18286639324\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"34.7254550\",\n            \"longitude\": \"158.0742440\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 7,\n            \"full_name\": \"William Pfannerstill\",\n            \"phone_number\": \"(757) 696-7703\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"10.0451610\",\n            \"longitude\": \"23.5231820\",\n            \"theme_mode\": \"light\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 8,\n            \"full_name\": \"Brianne Mayer\",\n            \"phone_number\": \"1-503-979-0186\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"38.5904930\",\n            \"longitude\": \"94.8669780\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 9,\n            \"full_name\": \"Dr. Gardner Balistreri MD\",\n            \"phone_number\": \"(341) 392-6919\",\n            \"lang\": \"en\",\n            \"role\": \"admin\",\n            \"latitude\": \"-54.8181540\",\n            \"longitude\": \"-114.3167130\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 10,\n            \"full_name\": \"Norval Pfannerstill\",\n            \"phone_number\": \"+1.941.305.8682\",\n            \"lang\": \"ar\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"22.3494120\",\n            \"longitude\": \"-103.1736230\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 1\n        },\n        {\n            \"id\": 11,\n            \"full_name\": \"Alvera Koss\",\n            \"phone_number\": \"1-845-555-3857\",\n            \"lang\": \"en\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"87.5456970\",\n            \"longitude\": \"44.5531000\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 12,\n            \"full_name\": \"Prof. Erling Hessel\",\n            \"phone_number\": \"+12626997344\",\n            \"lang\": \"ar\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"37.1418710\",\n            \"longitude\": \"-156.6743410\",\n            \"theme_mode\": \"light\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 13,\n            \"full_name\": \"Agnes Mueller\",\n            \"phone_number\": \"(425) 322-7047\",\n            \"lang\": \"ar\",\n            \"role\": \"user\",\n            \"latitude\": \"-48.5671530\",\n            \"longitude\": \"-165.2703600\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 0,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 14,\n            \"full_name\": \"Camron McCullough\",\n            \"phone_number\": \"+19867105034\",\n            \"lang\": \"en\",\n            \"role\": \"store_manager\",\n            \"latitude\": \"12.8422010\",\n            \"longitude\": \"118.3223250\",\n            \"theme_mode\": \"dark\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 0\n        },\n        {\n            \"id\": 15,\n            \"full_name\": \"Candace McGlynn Jr.\",\n            \"phone_number\": \"+1-830-747-3759\",\n            \"lang\": \"en\",\n            \"role\": \"user\",\n            \"latitude\": \"-21.1175420\",\n            \"longitude\": \"-137.2534110\",\n            \"theme_mode\": \"light\",\n            \"allow_gps\": 1,\n            \"allow_notifications\": 1\n        }\n    ],\n    \"links\": {\n        \"first\": \"http://127.0.0.1:8000/api/users?page=1\",\n        \"last\": \"http://127.0.0.1:8000/api/users?page=1\",\n        \"prev\": null,\n        \"next\": null\n    },\n    \"meta\": {\n        \"current_page\": 1,\n        \"from\": 1,\n        \"last_page\": 1,\n        \"links\": [\n            {\n                \"url\": null,\n                \"label\": \"&laquo; Previous\",\n                \"active\": false\n            },\n            {\n                \"url\": \"http://127.0.0.1:8000/api/users?page=1\",\n                \"label\": \"1\",\n                \"active\": true\n            },\n            {\n                \"url\": null,\n                \"label\": \"Next &raquo;\",\n                \"active\": false\n            }\n        ],\n        \"path\": \"http://127.0.0.1:8000/api/users\",\n        \"per_page\": 25,\n        \"to\": 15,\n        \"total\": 15\n    }\n}"
+				},
+				{
+					"name": "get Users",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 18:46:11 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Unauthenticated.\"\n}"
+				}
+			]
+		},
+		{
+			"name": "add_or_remove_favorites",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"product_id\":[1,2,3]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/users/toggle_favorites",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"toggle_favorites"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "add_or_remove_favorites",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\":[1,2,3]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/toggle_favorites",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"toggle_favorites"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 18:49:35 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Favorites toggled successfully\"\n}"
+				},
+				{
+					"name": "add_or_remove_favorites",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\":[1,2,3]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/toggle_favorites",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"toggle_favorites"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 20:10:00 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Favorites toggled successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "User favorites",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/users/favorites",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"favorites"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "favorites",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/favorites",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"favorites"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 19:58:35 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"There are no products in favorite list\"\n}"
+				},
+				{
+					"name": "favorites",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/favorites",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"favorites"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 20:01:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"favorites\": [\n        {\n            \"product_id\": 1\n        },\n        {\n            \"product_id\": 2\n        },\n        {\n            \"product_id\": 3\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "user orders",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/users/orders",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"users",
+						"orders"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "user orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/orders",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 20:12:58 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orders\": [\n        {\n            \"id\": 33,\n            \"user_id\": 1,\n            \"total_price\": \"276.00\",\n            \"order_status\": \"cart\",\n            \"order_items\": [\n                {\n                    \"product_id\": 1,\n                    \"quantity\": 2,\n                    \"price\": 86.73\n                },\n                {\n                    \"product_id\": 2,\n                    \"quantity\": 3,\n                    \"price\": 34.18\n                }\n            ]\n        },\n        {\n            \"id\": 31,\n            \"user_id\": 1,\n            \"total_price\": \"276.00\",\n            \"order_status\": \"cart\",\n            \"order_items\": [\n                {\n                    \"product_id\": 1,\n                    \"quantity\": 2,\n                    \"price\": 86.73\n                },\n                {\n                    \"product_id\": 2,\n                    \"quantity\": 3,\n                    \"price\": 34.18\n                }\n            ]\n        }\n    ]\n}"
+				},
+				{
+					"name": "user orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/orders?sort=oldest",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "sort",
+									"value": "oldest"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 21:45:36 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orders\": [\n        {\n            \"id\": 31,\n            \"user_id\": 1,\n            \"total_price\": \"276.00\",\n            \"order_status\": \"cart\",\n            \"order_items\": [\n                {\n                    \"product_id\": 1,\n                    \"quantity\": 2,\n                    \"price\": 86.73\n                },\n                {\n                    \"product_id\": 2,\n                    \"quantity\": 3,\n                    \"price\": 34.18\n                }\n            ]\n        },\n        {\n            \"id\": 33,\n            \"user_id\": 1,\n            \"total_price\": \"276.00\",\n            \"order_status\": \"cart\",\n            \"order_items\": [\n                {\n                    \"product_id\": 1,\n                    \"quantity\": 2,\n                    \"price\": 86.73\n                },\n                {\n                    \"product_id\": 2,\n                    \"quantity\": 3,\n                    \"price\": 34.18\n                }\n            ]\n        }\n    ]\n}"
+				},
+				{
+					"name": "user orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/orders",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 21:54:04 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"There are no orders yet.\"\n}"
+				},
+				{
+					"name": "user orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/orders?status=preparing",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "preparing"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 21:58:50 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"orders\": [\n        {\n            \"id\": 7,\n            \"user_id\": 1,\n            \"total_price\": \"88.70\",\n            \"order_status\": \"preparing\",\n            \"order_items\": [\n                {\n                    \"product_id\": 23,\n                    \"quantity\": 5,\n                    \"price\": 29.46\n                },\n                {\n                    \"product_id\": 29,\n                    \"quantity\": 4,\n                    \"price\": 18.06\n                },\n                {\n                    \"product_id\": 21,\n                    \"quantity\": 5,\n                    \"price\": 69.67\n                },\n                {\n                    \"product_id\": 41,\n                    \"quantity\": 2,\n                    \"price\": 0\n                },\n                {\n                    \"product_id\": 47,\n                    \"quantity\": 2,\n                    \"price\": 92.29\n                },\n                {\n                    \"product_id\": 45,\n                    \"quantity\": 5,\n                    \"price\": 0\n                }\n            ]\n        }\n    ]\n}"
+				},
+				{
+					"name": "user orders",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/users/orders?status=delivered",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"users",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "delivered"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Dec 2024 21:59:06 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"There are no orders yet.\"\n}"
+				}
+			]
+		}
+	]
+}

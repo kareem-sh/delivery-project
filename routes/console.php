@@ -6,9 +6,16 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+/*
+|--------------------------------------------------------------------------
+| Console Routes
+|--------------------------------------------------------------------------
+|
+| This file is where you may define all of your Closure based console
+| commands. Each Closure is bound to a command instance allowing a
+| simple approach to interacting with each command's IO methods.
+|
+*/
 
 Schedule::call(function () {
     $orders=Order::all();
@@ -28,3 +35,6 @@ Schedule::call(function () {
         }
     }
 })->everyMinute();
+})->purpose('Display an inspiring quote');
+
+

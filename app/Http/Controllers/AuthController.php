@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\TwilioService;
-
+use App\Http\Requests\handlePhoneNumberRequest;
 class AuthController extends Controller
 {
     protected $twilioService;
@@ -40,10 +41,15 @@ class AuthController extends Controller
         $sanctumToken = $user->tokens->first();
 
         if ($user->is_verified && $sanctumToken) {
+
+            $user->tokens->each(function ($token) {
+                $token->delete(); 
+            });
+            $newToken = $user->createToken('authToken')->plainTextToken;
             return response()->json([
                 'message' => 'Login successful',
-                'user' => $user,
-                'token' => $sanctumToken->plainTextToken,
+                'user' => new UserResource($user),
+                'token' => $newToken,
                 'require_phone_number' => false,
             ]);
         }
@@ -55,16 +61,12 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Verification required. OTP sent.',
             'require_phone_number' => false,
-            'user' => $user,
         ]);
     }
 
-    public function handlePhoneNumber(Request $request)
+    public function handlePhoneNumber(handlePhoneNumberRequest $request)
     {
-        $request->validate([
-            'fcm_token' => 'required|string',
-            'phone_number' => 'required|string',
-        ]);
+        $request->validated();
 
         $fcmToken = $request->fcm_token;
         $phoneNumber = $request->phone_number;
@@ -80,7 +82,6 @@ class AuthController extends Controller
 
             return response()->json([
                 'message' => 'Verification required. OTP sent.',
-                'user' => $user,
             ]);
         }
 
@@ -98,8 +99,7 @@ class AuthController extends Controller
         $this->twilioService->sendOtp($phoneNumber);
 
         return response()->json([
-            'message' => 'User created. Verification required. OTP sent.',
-            'user' => $newUser,
+            'message' => 'Verification required. OTP sent.',
         ]);
     }
 
@@ -142,7 +142,7 @@ class AuthController extends Controller
                 ? 'Verification successful. Please complete your profile.'
                 : 'Verification successful. Welcome back!',
             'token' => $token,
-            'user' => $user,
+            'user' => new UserResource($user),
             'is_new_user' => $isNewUser,
         ]);
     }
@@ -178,7 +178,6 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'A new OTP has been sent to your phone.',
-            'user' => $user,
         ]);
     }
 }

@@ -1,10 +1,11 @@
 <?php
 
-namespace AppServices;
+namespace App\Services;
 
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Exception\MessagingException;
 
 class FcmService
 {
@@ -26,6 +27,11 @@ class FcmService
             ->withNotification($notification)
             ->withData($data);
 
-        return $this->messaging->send($message);
+        try {
+            $this->messaging->send($message);
+            return response()->json(['success' => true], 200);
+        } catch(MessagingException $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

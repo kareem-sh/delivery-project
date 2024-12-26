@@ -94,7 +94,11 @@ class UserController extends Controller
             return response()->json(['message' => 'User not found.'], 404);
         }
 
-        $this->authorize('delete', $user);
+        try {
+            $this->authorize('delete', $user);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'This action is unauthorized.'], 401);
+        }
         $user->tokens->each->delete();
         $user->delete();
 

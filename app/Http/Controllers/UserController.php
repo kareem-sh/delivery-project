@@ -151,7 +151,7 @@ class UserController extends Controller
         $query = Order::where('user_id', $user->id);
     
         // Exclude 'cart' status
-        if ($status && $status !== 'cart') {
+        if ($status && $status !== 'cart' && $status !== 'canceled') {
             $query->where('order_status', $status);
         }
     
@@ -162,10 +162,13 @@ class UserController extends Controller
             $query->latest(); 
         }
     
-        $orders = $query->where('order_status','!=','cart')->with('orderItems.product')->get();
+        $orders = $query->whereNotIn('order_status', ['cart', 'canceled'])
+                ->with('orderItems.product')
+                ->get();
+
         if ($orders->isEmpty()) {
             return response()->json([
-                'message' => 'There are no orders yet.'
+                'message' => 'No orders available.'
             ]);
         }
         return response()->json([

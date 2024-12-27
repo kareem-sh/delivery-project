@@ -27,6 +27,7 @@ class UpdateUserRequest extends FormRequest
                 'phone_number' =>'nullable|string',
                 'lang' =>'nullable|string|in:ar,en',
                 'is_verified' =>'nullable|string',
+                'image' => 'nullable|mimes:png,jpg,png,jpeg|max:2048',
                 'role' => 'nullable|string|in:user,admin,store_manager',
                 'allow_gps' =>'nullable|boolean',
                 'allow_notifications' =>'nullable|boolean',

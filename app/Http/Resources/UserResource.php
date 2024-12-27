@@ -13,6 +13,7 @@ class UserResource extends JsonResource
             'full_name' => $this->full_name,
             'phone_number' => $this->phone_number,
             'lang' => $this->lang,
+            'image' => $this->image ? asset('storage/' . $this->image) : null,
             'role' => $this->role,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,

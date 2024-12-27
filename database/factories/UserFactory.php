@@ -20,7 +20,6 @@ class UserFactory extends Factory
         return [
             'full_name' => $this->faker->name,
             'phone_number' => $this->faker->unique()->phoneNumber,
-            'fcm_token' => $this->faker->unique()->uuid, // Generate a unique token
             'verification_code' => $this->faker->numerify('#####'), // 5-digit random number
             'verification_code_expiry' => now()->addMinutes(30), // Expiry 30 mins from now
             'is_verified' => $this->faker->boolean(50), // Randomly true/false

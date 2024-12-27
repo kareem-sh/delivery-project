@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
 }

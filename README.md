@@ -22,3 +22,21 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 ## Project: Delivery Project
 
 This project is a delivery application built with Laravel. The purpose of this project is to manage deliveries and logistics efficiently. It leverages Laravel's features for a robust and scalable solution.
+
+---
+
+## Installation Instructions
+
+Follow these steps to get the project up and running locally:
+
+
+### Explanation of the Instructions:
+
+1. **`composer install`**: Installs the necessary PHP dependencies defined in `composer.json`.
+2. **`composer update`**: Updates the dependencies to the latest versions as specified in `composer.json`.
+3. **`php artisan storage:link`**: make link between storage and public file.
+4. **`php artisan migrate`**: Runs database migrations to set up the required tables and structure in your database.
+5. **`php artisan db:seed`**: Seeds the database with default data, useful for testing or initial setup.
+6. **`php artisan serve`**: Starts the local development server, usually accessible at `http://127.0.0.1:8000`.
+
+This should help anyone setting up your project for the first time or running it locally.

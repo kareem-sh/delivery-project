@@ -12,10 +12,10 @@ return new class extends Migration
             $table->id();
             $table->string('full_name')->nullable();
             $table->string('phone_number')->unique();
-            $table->string('fcm_token')->nullable()->unique();
             $table->string('verification_code')->nullable();
             $table->timestamp('verification_code_expiry')->nullable();
             $table->boolean('is_verified')->default(false);
+            $table->string('image')->nullable();
             $table->enum('lang', ['en', 'ar'])->default('en');
             $table->enum('role', ['user', 'admin', 'store_manager'])->default('user');
             $table->decimal('latitude', 10, 7)->nullable();

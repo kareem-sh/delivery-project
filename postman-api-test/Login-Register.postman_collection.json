@@ -2,200 +2,11 @@
 	"info": {
 		"_postman_id": "fcafa336-2d7d-4311-8015-0a421b6edab9",
 		"name": "Login/Register",
+		"description": "Send fcm token when the user open the app, the function check if the fcm token stored before if it is stored it check for valid token and login if the token is not valid then it requrie the phone number",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "39066757"
 	},
 	"item": [
-		{
-			"name": "handleRequset",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"fcm_token\": \"fcm_token\"\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://127.0.0.1:8000/api/auth/handleRequest",
-					"protocol": "http",
-					"host": [
-						"127",
-						"0",
-						"0",
-						"1"
-					],
-					"port": "8000",
-					"path": [
-						"api",
-						"auth",
-						"handleRequest"
-					]
-				}
-			},
-			"response": [
-				{
-					"name": "handleRequset",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"fcm_token\": \"fcm_token\"\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/api/auth/handleRequest",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"auth",
-								"handleRequest"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Host",
-							"value": "127.0.0.1:8000"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.2.12"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "Date",
-							"value": "Wed, 25 Dec 2024 20:14:36 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"message\": \"Phone number required.\",\n    \"require_phone_number\": true\n}"
-				},
-				{
-					"name": "handleRequset",
-					"originalRequest": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"fcm_token\": \"fcm_token\"\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/api/auth/handleRequest",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"auth",
-								"handleRequest"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Host",
-							"value": "127.0.0.1:8000"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.2.12"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "Date",
-							"value": "Wed, 25 Dec 2024 21:01:03 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"message\": \"Login successful\",\n    \"user\": {\n        \"id\": 16,\n        \"full_name\": null,\n        \"phone_number\": \"+963967730281\",\n        \"lang\": \"en\",\n        \"role\": \"user\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"theme_mode\": \"light\",\n        \"allow_gps\": 0,\n        \"allow_notifications\": 0\n    },\n    \"token\": \"6|aKgdlnz0gnDceR32Ymi0RfmBuiSXKqaVUMpsfE4G3d310db4\",\n    \"require_phone_number\": false\n}"
-				}
-			]
-		},
 		{
 			"name": "handlePhoneNumber",
 			"request": {
@@ -203,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"fcm_token\": \"fcm_token\",\r\n  \"phone_number\":\"+963967730281\"\r\n}",
+					"raw": "{\r\n  \"fcm_token\": \"token\",\r\n  \"phone_number\":\"+963967730281\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -225,7 +36,8 @@
 						"auth",
 						"handlePhoneNumber"
 					]
-				}
+				},
+				"description": "needs the phone number and fcm token to create a new user or login fron a new device"
 			},
 			"response": [
 				{
@@ -281,7 +93,7 @@
 						},
 						{
 							"key": "Date",
-							"value": "Wed, 25 Dec 2024 21:06:07 GMT"
+							"value": "Fri, 27 Dec 2024 09:59:08 GMT"
 						},
 						{
 							"key": "Content-Type",
@@ -293,7 +105,7 @@
 						}
 					],
 					"cookie": [],
-					"body": "{\n    \"message\": \"Verification required. OTP sent.\"\n}"
+					"body": "{\n    \"message\": \"OTP sent for verification.\"\n}"
 				}
 			]
 		},
@@ -304,7 +116,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\":\"+963967730281\",\r\n    \"code\":\"8333\"\r\n}",
+					"raw": "{\r\n    \"phone_number\":\"+963967730281\",\r\n    \"code\":\"9404\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -326,76 +138,10 @@
 						"auth",
 						"verify"
 					]
-				}
+				},
+				"description": "needs phone number and code and the code expires after 2 min"
 			},
 			"response": [
-				{
-					"name": "verify",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"phone_number\":\"+963967730281\",\r\n    \"code\":\"8333\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://127.0.0.1:8000/api/auth/verify",
-							"protocol": "http",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "8000",
-							"path": [
-								"api",
-								"auth",
-								"verify"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": "json",
-					"header": [
-						{
-							"key": "Host",
-							"value": "127.0.0.1:8000"
-						},
-						{
-							"key": "Connection",
-							"value": "close"
-						},
-						{
-							"key": "X-Powered-By",
-							"value": "PHP/8.2.12"
-						},
-						{
-							"key": "Cache-Control",
-							"value": "no-cache, private"
-						},
-						{
-							"key": "Date",
-							"value": "Wed, 25 Dec 2024 21:07:07 GMT"
-						},
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						},
-						{
-							"key": "Access-Control-Allow-Origin",
-							"value": "*"
-						}
-					],
-					"cookie": [],
-					"body": "{\n    \"message\": \"Verification successful. Please complete your profile.\",\n    \"token\": \"7|K6qpJLQ88KDkM47GybxvoKRuoeC7IETNc1jr13Opd4ae11c7\",\n    \"user\": {\n        \"id\": 16,\n        \"full_name\": null,\n        \"phone_number\": \"+963967730281\",\n        \"lang\": \"en\",\n        \"role\": \"user\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"theme_mode\": \"light\",\n        \"allow_gps\": 0,\n        \"allow_notifications\": 0\n    },\n    \"is_new_user\": true\n}"
-				},
 				{
 					"name": "verify",
 					"originalRequest": {
@@ -462,6 +208,73 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"message\": \"OTP has expired.\"\n}"
+				},
+				{
+					"name": "verify",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\":\"+963967730281\",\r\n    \"code\":\"3470\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/auth/verify",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"verify"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 27 Dec 2024 10:02:52 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Verification successful. Please complete your profile.\",\n    \"token\": \"2|A9BtIXtc9e9xkRgoBEp4TFmGwgZ6U3uUeGUr7iredbfbedae\",\n    \"user\": {\n        \"id\": 16,\n        \"full_name\": null,\n        \"phone_number\": \"+963967730281\",\n        \"lang\": \"en\",\n        \"image\": null,\n        \"role\": \"user\",\n        \"latitude\": null,\n        \"longitude\": null,\n        \"theme_mode\": \"light\",\n        \"allow_gps\": 0,\n        \"allow_notifications\": 0\n    },\n    \"is_new_user\": true\n}"
 				}
 			]
 		},
@@ -494,7 +307,8 @@
 						"auth",
 						"resend-otp"
 					]
-				}
+				},
+				"description": "resend the code after 2 min"
 			},
 			"response": [
 				{
@@ -630,6 +444,118 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"message\": \"Please wait until the current OTP expires before requesting a new one.\",\n    \"expiry_time\": \"2024-12-25 21:11:05\"\n}"
+				}
+			]
+		},
+		{
+			"name": "logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "2|A9BtIXtc9e9xkRgoBEp4TFmGwgZ6U3uUeGUr7iredbfbedae",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fcm_token\":\"fcm_token\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/auth/logout",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"auth",
+						"logout"
+					]
+				},
+				"description": "needs bearer token and fcm token"
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fcm_token\":\"fcm_token\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/auth/logout",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 27 Dec 2024 10:44:30 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"Logged out successfully \"\n}"
 				}
 			]
 		}

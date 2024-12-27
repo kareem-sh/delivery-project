@@ -15,6 +15,10 @@ use App\Http\Resources\OrderResource;
 use App\Http\Resources\UserResource;
 use Exception;
 use App\Models\Order;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Log;
+use Illuminate\Http\Client\ResponseSequence;
 
 class UserController extends Controller
 {
@@ -65,27 +69,58 @@ class UserController extends Controller
         ]);
     }
 
+
     public function update(UpdateUserRequest $request, $id)
     {
+        // Find the user by ID
         $user = User::find($id);
+        
+        // If the user is not found, return a 404 response
         if (!$user) {
             return response()->json(['message' => 'User not found.'], 404);
         }
-
+    
         try {
+            // Check if the user is authorized to update
             $this->authorize('update', $user);
         } catch (Exception $e) {
             return response()->json(['message' => 'This action is unauthorized.'], 401);
         }
-
+    
+        // Validate and prepare the data
         $data = $request->validated();
+    
+        // Ensure only admin can update the role
         if ($request->has('role') && Auth::user()->role != 'admin') {
             return response()->json(['message' => 'This action is unauthorized.'], 401);
         }
+    
+        // Handle image upload (if provided)
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($user->image && Storage::disk('public')->exists($user->image)) {
+                Storage::disk('public')->delete($user->image);
+            }
+    
+            // Store the new image and get the path
+            $imagePath = $request->file('image')->store('users', 'public');
+            
+            // Update the 'image' field with the new path
+            $data['image'] = $imagePath;
+        }
+    
+        // Update the user with the validated data
         $user->update($data);
-
-        return response()->json(['message' => 'User updated successfully.', 'user' => new UserResource($user)]);
+    
+        // Return a success response with the updated user data
+        return response()->json([
+            'message' => 'User updated successfully.',
+            'user' => new UserResource($user),
+        ]);
     }
+    
+    
+    
 
     public function destroy(string $id)
     {

@@ -14,18 +14,19 @@ use App\Http\Controllers\StoreController;
 
 Route::prefix('/auth')->group(function () {
     //Take the fcm token and check the need for the user phone number
-    Route::post('/handleRequest', [AuthController::class, 'handleRequest'])->name('login');
 
     //Make lgin or send an OTP
-    Route::post('/handlePhoneNumber', [AuthController::class, 'handlePhoneNumber']);
+    Route::post('/handlePhoneNumber', [AuthController::class, 'handlePhoneNumber'])->name('login');
    
    // Verify the OTP
     Route::post('/verify', [AuthController::class, 'verify']);
     
     // Resend OTP
     Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
-});
 
+    Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+});
+    
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/favorites', [UserController::class, 'favorites']);
     Route::post('users/toggle_favorites', [UserController::class, 'toggle_favorites']);

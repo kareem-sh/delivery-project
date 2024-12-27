@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\TwilioService;
 use App\Http\Requests\handlePhoneNumberRequest;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Device;
+
 class AuthController extends Controller
 {
     protected $twilioService;
@@ -16,92 +19,52 @@ class AuthController extends Controller
         $this->twilioService = $twilioService;
     }
 
-    public function handleRequest(Request $request)
+    public function handlePhoneNumber(Request $request)
     {
         $request->validate([
+            'phone_number' => 'required|string',
             'fcm_token' => 'required|string',
         ]);
-
-        $fcmToken = $request->fcm_token;
-
-        $user = User::where('fcm_token', $fcmToken)->first();
-
-        if ($user) {
-            return $this->handleExistingUser($user);
-        }
-
-        return response()->json([
-            'message' => 'Phone number required.',
-            'require_phone_number' => true,
-        ]);
-    }
-
-    private function handleExistingUser($user)
-    {
-        $sanctumToken = $user->tokens->first();
-
-        if ($user->is_verified && $sanctumToken) {
-
-            $user->tokens->each(function ($token) {
-                $token->delete(); 
-            });
-            $newToken = $user->createToken('authToken')->plainTextToken;
-            return response()->json([
-                'message' => 'Login successful',
-                'user' => new UserResource($user),
-                'token' => $newToken,
-                'require_phone_number' => false,
-            ]);
-        }
-
-        $user->is_verified = false;
-        $this->twilioService->sendOtp($user->phone_number);
-        $user->save();
-
-        return response()->json([
-            'message' => 'Verification required. OTP sent.',
-            'require_phone_number' => false,
-        ]);
-    }
-
-    public function handlePhoneNumber(handlePhoneNumberRequest $request)
-    {
-        $request->validated();
-
-        $fcmToken = $request->fcm_token;
+    
         $phoneNumber = $request->phone_number;
-
+        $fcmToken = $request->fcm_token;
+    
         $user = User::where('phone_number', $phoneNumber)->first();
-
+    
         if ($user) {
-            $user->fcm_token = $fcmToken;
+            // Update or add the device's FCM token
+            $user->devices()->updateOrCreate(
+                ['fcm_token' => $fcmToken]
+            );
+    
+            // Send OTP
             $user->is_verified = false;
-            $this->twilioService->sendOtp($phoneNumber);
-            $user->tokens->each->delete();
             $user->save();
-
+            $this->twilioService->sendOtp($phoneNumber);
+    
             return response()->json([
-                'message' => 'Verification required. OTP sent.',
+                'message' => 'OTP sent for verification.',
+            ]);
+        } else {
+            // Create a new user and add the device
+            $newUser = User::create([
+                'phone_number' => $phoneNumber,
+                'is_verified' => false,
+            ]);
+    
+            $newUser->devices()->create([
+                'fcm_token' => $fcmToken,
+            ]);
+    
+            $this->twilioService->sendOtp($phoneNumber);
+    
+            return response()->json([
+                'message' => 'OTP sent for verification.',
             ]);
         }
-
-        return $this->createNewUser($fcmToken, $phoneNumber);
     }
+    
 
-    private function createNewUser($fcmToken, $phoneNumber)
-    {
-        $newUser = User::create([
-            'phone_number' => $phoneNumber,
-            'fcm_token' => $fcmToken,
-            'is_verified' => false,
-        ]);
-
-        $this->twilioService->sendOtp($phoneNumber);
-
-        return response()->json([
-            'message' => 'Verification required. OTP sent.',
-        ]);
-    }
 
     public function verify(Request $request)
     {
@@ -180,4 +143,25 @@ class AuthController extends Controller
             'message' => 'A new OTP has been sent to your phone.',
         ]);
     }
+
+    public function logout(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'fcm_token' => 'required|string',
+        ]);
+        $user = Auth::user();
+    
+        $device = Device::where('user_id', $user->id)
+                        ->where('fcm_token', $request->fcm_token)
+                        ->first();
+    
+        if ($device) {
+            $device->delete();
+        } 
+        $currentToken = auth()->user()->currentAccessToken()->delete();
+    
+        return response()->json(['message' => 'Logged out successfully ']);
+       
+ } 
 }

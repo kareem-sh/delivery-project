@@ -7,30 +7,29 @@ use App\Http\Controllers\AuthController;
 use App\Models\User;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
-
+use App\Http\Controllers\FcmController;
 
 Route::prefix('/auth')->group(function () {
     //Take the fcm token and check the need for the user phone number
 
     //Make lgin or send an OTP
     Route::post('/handlePhoneNumber', [AuthController::class, 'handlePhoneNumber'])->name('login');
-   
-   // Verify the OTP
+
+    // Verify the OTP
     Route::post('/verify', [AuthController::class, 'verify']);
-    
+
     // Resend OTP
     Route::post('/resend-otp', [AuthController::class, 'resendOtp']);
 
-    Route::post('/logout',[AuthController::class,'logout'])->middleware('auth:sanctum');
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
-    
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/favorites', [UserController::class, 'favorites']);
     Route::post('users/toggle_favorites', [UserController::class, 'toggle_favorites']);
-    Route::get('users/orders',[UserController::class,'getUserOrders']);
+    Route::get('users/orders', [UserController::class, 'getUserOrders']);
     Route::apiResource('/users', UserController::class);
 
 
@@ -60,7 +59,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Show an order with its sub-orders and items
     Route::get('/orders/{id}', [OrderController::class, 'show']);
-    
+
     // Show an order with its items only 
     // Route::get('/orders/{id}/items', [OrderController::class, 'getOrderItems']);
 
@@ -70,15 +69,21 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Cancel the entire order and all its sub-orders
     Route::delete('/orders/{id}/cancel', [OrderController::class, 'cancelOrder']);
 
-     // Cancel a sub-order
+    // Cancel a sub-order
     // Route::delete('/sub-orders/{id}/cancel', [OrderController::class, 'cancelSubOrder']);
 
     // Change the order status from cart to pending
     Route::put('/orders/{id}/submit', [OrderController::class, 'submit']);
 
-   
+
 });
 
-     // Get the cart orders for a specific user
-     Route::get('/cart', [OrderController::class, 'getCart'])->middleware('auth:sanctum');
-     
+// Get the cart orders for a specific user
+Route::get('/cart', [OrderController::class, 'getCart'])->middleware('auth:sanctum');
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [FcmController::class, 'index']);
+    Route::post('/notifications/send', [FcmController::class, 'send']);
+    Route::post('/notifications/{notificationId}/read', [FcmController::class, 'markAsRead']);
+});

@@ -1,63 +1,65 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Notification;
-use App\Models\User;
+use App\Http\Controllers\Controller;
+use App\Services\Api\FcmService;
 use Illuminate\Http\Request;
-use Illuminate\Support\FacadesDB;
-use Illuminate\Support\Facades\Http;
-use DB;
-
 class FcmController extends Controller
 {
-    public function sendOrderStatusNotification($userId, $title, $body, $data = [])
+    protected $fcmService;
+    public function __construct(FcmService $fcmService)
     {
-        $user = User::find($userId);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $notificationData = [
-            'title' => $title,
-            'body' => $body,
-            'data' => $data,
-        ];
-
-        Notification::insert([
-            'user_id' => $user->id,
-            'title' => $notificationData['title'],
-            'body' => $notificationData['body'],
-            'data' => json_encode($notificationData['data']),
-            'created_at' => now(),
-        ]);
-
-        $this->sendFCMNotification($user->fcm_token, $notificationData);
-
-        return response()->json(['message' => 'Notification sent successfully']);
+        $this->fcmService = $fcmService;
     }
 
-    private function sendFCMNotification($token, $notificationData)
+    /**
+     * Get the authenticated user's notifications.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
     {
-        $serverKey = env('FCM_SERVER_KEY');
-        $url = 'https://fcm.googleapis.com/fcm/send';
+        $notifications = $this->fcmService->index();
+        return response()->json($notifications);
+    }
 
-        $headers = [
-            'Authorization: key=' . $serverKey,
-            'Content-Type: application/json',
-        ];
+    /**
+     * Send a notification to a user.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function send(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'title' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
 
-        $data = [
-            'to' => $token,
-            'notification' => [
-                'title' => $notificationData['title'],
-                'body' => $notificationData['body'],
-                'sound' => 'default',
-            ],
-            'data' => $notificationData['data'],
-        ];
+        $result = $this->fcmService->send($request->user_id, $request->title, $request->message);
 
-        Http::withHeaders($headers)->post($url, $data);
+        if ($result > 0) {
+            return response()->json(['message' => 'Notification sent successfully to ' . $result . ' device(s).'], 200);
+        } else {
+            return response()->json(['message' => 'No devices found for the specified user.'], 404);
+        }
+    }
+
+    /**
+     * Mark a notification as read.
+     *
+     * @param int $notificationId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function markAsRead($notificationId)
+    {
+        $result = $this->fcmService->markAsRead($notificationId);
+
+        if ($result) {
+            return response()->json(['message' => 'Notification marked as read.'], 200);
+        } else {
+            return response()->json(['message' => 'Notification not found.'], 404);
+        }
     }
 }

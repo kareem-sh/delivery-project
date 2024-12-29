@@ -19,6 +19,7 @@ class User extends Authenticatable
         'is_verified',
         'lang',
         'role',
+        'image',
         'latitude',
         'longitude',
         'theme_mode',

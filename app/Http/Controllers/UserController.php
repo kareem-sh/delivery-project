@@ -89,7 +89,7 @@ class UserController extends Controller
     
         // Validate and prepare the data
         $data = $request->validated();
-    
+        
         // Ensure only admin can update the role
         if ($request->has('role') && Auth::user()->role != 'admin') {
             return response()->json(['message' => 'This action is unauthorized.'], 401);

@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "8b9515a7-e536-4ed2-a052-8e962cd40a73",
+		"_postman_id": "0d5f0b8f-3aab-457c-8b47-ff31a9342948",
 		"name": "Stores",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "38928530"
+		"_exporter_id": "39066757"
 	},
 	"item": [
 		{
@@ -14,7 +14,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "",
+							"value": "1|KUcBlVdNChrUiyWztn5B4BIv1K69oEkzcvVOEDvA1d9ce8ae",
 							"type": "string"
 						}
 					]
@@ -38,13 +38,19 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "",
+							"value": "1|KUcBlVdNChrUiyWztn5B4BIv1K69oEkzcvVOEDvA1d9ce8ae",
 							"type": "string"
 						}
 					]
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "{{URL}}stores/3",
 					"host": [
@@ -65,7 +71,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "",
+							"value": "1|KUcBlVdNChrUiyWztn5B4BIv1K69oEkzcvVOEDvA1d9ce8ae",
 							"type": "string"
 						}
 					]
@@ -73,14 +79,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}stores/3/products/mobiles",
+					"raw": "{{URL}}stores/3/products/odio",
 					"host": [
 						"{{URL}}stores"
 					],
 					"path": [
 						"3",
 						"products",
-						"mobiles"
+						"odio"
 					]
 				}
 			},
@@ -94,7 +100,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "",
+							"value": "1|KUcBlVdNChrUiyWztn5B4BIv1K69oEkzcvVOEDvA1d9ce8ae",
 							"type": "string"
 						}
 					]
@@ -102,12 +108,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}search/sa",
+					"raw": "{{URL}}search/ch",
 					"host": [
 						"{{URL}}search"
 					],
 					"path": [
-						"sa"
+						"ch"
 					]
 				}
 			},
@@ -259,6 +265,28 @@
 					],
 					"path": [
 						"7"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Categories Of Store",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/stores/4/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"stores",
+						"4",
+						"categories"
 					]
 				}
 			},

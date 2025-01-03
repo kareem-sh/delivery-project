@@ -13,8 +13,12 @@ class CategoryController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $categories = Category::all();
-        return $categories;
+        $categories = collect();
+        $categories->push("All");
+        foreach (Category::all() as $category) {
+            $categories->push($category->name);
+        }
+        return collect($categories)->values();
     }
     public function store(CreateCategoryRequest $request)
     {

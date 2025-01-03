@@ -62,14 +62,19 @@ class StoreController extends Controller
     }
     public function ProductsAsCategory($id, string $name)
     {
-        $category = Category::where('name', $name)->first();
-        $products = Product::where('category_id', $category->id)->where('store_id', $id)->get();
+        if ($name == "All") {
+            $store = Store::find($id);
+            $products = $store->products;
+        } else {
+            $category = Category::where('name', $name)->first();
+            $products = Product::where('category_id', $category->id)->where('store_id', $id)->get();
+        }
         return ProductResource::collection(($products));
     }
-    public function search(string $prefix)
+    public function search(string $sub)
     {
-        $stores = Store::where('name', 'LIKE', '%' . $prefix . '%')->get();
-        $products = Product::where('name', 'LIKE', '%' . $prefix . '%')->get();
+        $stores = Store::where('name', 'LIKE', '%' . $sub . '%')->get();
+        $products = Product::where('name', 'LIKE', '%' . $sub . '%')->get();
         return response()->json([
             "stores" => $stores,
             "products" => ProductResource::collection(($products))
@@ -77,13 +82,14 @@ class StoreController extends Controller
     }
     public function categoryOfStore($id)
     {
-        $store = Store::find($id);
+        $stores = Store::find($id);
         $categories = collect();
-        foreach ($store->products as $product) {
+        $categories->push("All");
+        foreach ($stores->products as $product) {
             $category = Category::find($product->category_id);
             $categories->push($category->name);
         }
         $category = $categories->unique();
-        dd($category);
+        return collect($category)->values();
     }
 }

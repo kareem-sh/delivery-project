@@ -20,9 +20,9 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity');
             $table->string('image_url')->nullable();
-            $table->enum('discount_type', ['percentage', 'fixed'])->nullable(); 
-            $table->decimal('discount_value', 10, 2)->nullable();              
-            $table->date('discount_start')->nullable();                      
+            $table->string('delivery_period')->nullable();
+            $table->decimal('discount_value', 10, 2)->nullable();
+            $table->date('discount_start')->nullable();
             $table->date('discount_end')->nullable();
             $table->timestamps();
         });

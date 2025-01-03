@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Order;
-use App\Models\SubOrder;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Store;
@@ -37,25 +36,22 @@ class DatabaseSeeder extends Seeder
 
         // Create orders for users
         $users->each(function ($user) use ($stores) {
+            // Create 3 orders for each user
             $orders = Order::factory()->count(3)->create(['user_id' => $user->id]);
 
-            // For each order, create sub-orders and items
+            // For each order, create order items
             $orders->each(function ($order) use ($stores) {
-                // Split each order into sub-orders for random stores
+                // Select random stores for the order
                 $stores->random(2)->each(function ($store) use ($order) {
-                    // Create a sub-order
-                    $subOrder = SubOrder::factory()->create([
-                        'order_id' => $order->id,
-                        'store_id' => $store->id,
-                    ]);
-
-                    // Create order items for each sub-order
-                    Product::where('store_id', $store->id)->inRandomOrder()->take(3)->get()
-                        ->each(function ($product) use ($subOrder, $order) {
-                            // Create order items, ensuring both order_id and sub_order_id are provided
+                    // Get random products from the selected store
+                    Product::where('store_id', $store->id)
+                        ->inRandomOrder()
+                        ->take(3)
+                        ->get()
+                        ->each(function ($product) use ($order) {
+                            // Create order items for the order
                             OrderItem::factory()->create([
-                                'order_id' => $order->id,  // Ensure order_id is assigned
-                                'sub_order_id' => $subOrder->id,  // Associate with sub-order
+                                'order_id' => $order->id,
                                 'product_id' => $product->id,
                                 'price' => $product->price,
                                 'quantity' => rand(1, 5),

@@ -20,285 +20,33 @@ use Illuminate\Support\Facades\Auth;
 class OrderController extends Controller
 {
     use AuthorizesRequests;
-    /**
-     * Store a new order or cart.
-     */
-    public function store(StoreOrderRequest $request)
+
+
+    public function index()
     {
-        $validated = $request->validated();
-    
-        // Create a new order (this will always create a new order when called)
-        $order = Order::create([
-            'user_id' => $validated['user_id'],
-            'order_status' => 'cart',
-            'total_price' => 0,
-        ]);
-    
-        $totalPrice = 0;
-    
-        foreach ($validated['order_items'] as $item) {
-            $product = Product::findOrFail($item['product_id']);
-    
-            // Calculate the effective price (discounted price)
-            $effectivePrice = $product->getEffectivePriceAttribute(); // Price with discount
-    
-            // Check stock availability
-            if ($product->stock_quantity < $item['quantity']) {
-                return response()->json([
-                    'message' => 'Insufficient stock for product: ' . $product->name,
-                ], 400);
-            }
-    
-            $storeId = $product->store_id;
-    
-            // Check if there's already a suborder for this store in the current order
-            $subOrder = $order->subOrders()->where('store_id', $storeId)->first();
-    
-            if (!$subOrder) {
-                // Create a new suborder if none exists for this store
-                $subOrder = SubOrder::create([
-                    'order_id' => $order->id,
-                    'store_id' => $storeId,
-                    'sub_total' => 0, // Initially set the sub-total to 0
-                    'order_status' => 'cart',
-                ]);
-            }
-    
-            // Create the order item and store only the effective price
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['product_id'],
-                'sub_order_id' => $subOrder->id,
-                'quantity' => $item['quantity'],
-                'price' => $effectivePrice, // Store effective price (discounted price)
-            ]);
-    
-            // Update suborder totals using the effective price (discounted price)
-            $subOrder->sub_total += $effectivePrice * $item['quantity'];
-            $subOrder->save();
-    
-            // Update the order's total price
-            $totalPrice += $effectivePrice * $item['quantity'];
-        }
-    
-        // Update the order's total price
-        $order->update(['total_price' => $totalPrice]);
-        $order_details = $order->orderItems;
-        // Return the order with order details (items)
-        return response()->json([
-            'order_details' => new OrderResource($order),
-        ], 201);
+        return Order::with('ordeItems')->get();
     }
-    
+
     /**
      * Show an order with its sub-orders and items.
      */
     public function show($id)
     {
         $order = Order::with(['orderItems.product'])->findOrFail($id);
-        try{
-            // $this->authorize('view', $order);
-        }catch(Exception $e){
-            return response()->json([
-                'message' => 'Unauthorized action'
-            ]);
-        }
-        
-        return response()->json(["order_details" => new OrderResource($order)]);
-    }
-
-    public function getOrderItems($id)
-    {
-        $order =  Order::with(['orderItems.product'])->findOrFail($id);
-        $order_details = Order::findOrFail($id);
-        try{
-            // $this->authorize('view', $order);
-        }catch(Exception $e){
-            return response()->json([
-                'message' => 'Unauthorized action'
-            ]);
-        }
-        return response()->json([
-            'order_details' => $order_details,
-            'order_items' => OrderItemResource::collection($order->orderItems),
-        ]);
-    }
-
-    /**
-     * Update the order (add items, remove items, or update item quantities).
-     */
-    public function update(UpdateOrderRequest $request, $id)
-    {
-        // Validate the request
-        $validated = $request->validated();
-      
-        // Find the order along with its sub-orders and items
-        $order = Order::with('subOrders.orderItems')->findOrFail($id);
-    
         try {
-            // $this->authorize('update', $order);
+            $this->authorize('view', $order);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Unauthorized action'
             ]);
         }
-    
-        // Ensure the order is in a modifiable status
-        if (!in_array($order->order_status, ['cart', 'pending'])) {
-            return response()->json(['message' => 'Only cart or pending orders can be updated.'], 400);
-        }
-    
-        $newOrderItems = collect($validated['order_items']);
-        $existingOrderItems = $order->subOrders->flatMap->orderItems;
-    
-        $totalPrice = 0;
-    
-        // Step 1: Update or add order items
-        foreach ($newOrderItems as $item) {
-            $product = Product::findOrFail($item['product_id']);
-    
-            // Find or create the corresponding sub-order
-            $storeId = $product->store_id;
-            $subOrder = SubOrder::firstOrCreate(
-                ['order_id' => $order->id, 'store_id' => $storeId],
-                ['sub_total' => 0, 'order_status' => $order->order_status]
-            );
-    
-            // Check if the order item already exists
-            $orderItem = $subOrder->orderItems()->where('product_id', $item['product_id'])->first();
-    
-            $effectivePrice = $product->getEffectivePriceAttribute();
-    
-            if ($orderItem) {
-                // Calculate the difference in quantity
-                $quantityDiff = $item['quantity'] - $orderItem->quantity;
-    
-                // Adjust product stock if the order is in pending status
-                if ($order->order_status === 'pending') {
-                    if ($quantityDiff > 0) { // Ordering more items
-                        if ($product->stock_quantity < $quantityDiff) {
-                            return response()->json([
-                                'message' => 'Insufficient stock for product: ' . $product->name,
-                            ], 400);
-                        }
-                        $product->stock_quantity -= $quantityDiff;
-                    } elseif ($quantityDiff < 0) { // Returning items
-                        $product->stock_quantity += abs($quantityDiff);
-                    }
-                    $product->save();
-                }
-    
-                // Update the existing order item's quantity and price
-                $subOrder->sub_total -= $orderItem->price * $orderItem->quantity;
-    
-                $orderItem->update([
-                    'quantity' => $item['quantity'],
-                    'price' => $effectivePrice,
-                ]);
-            } else {
-                // Create a new order item
-                $orderItem = $subOrder->orderItems()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['product_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $effectivePrice,
-                ]);
-    
-                // Adjust product stock if the order is in pending status
-                if ($order->order_status === 'pending') {
-                    if ($product->stock_quantity < $item['quantity']) {
-                        return response()->json([
-                            'message' => 'Insufficient stock for product: ' . $product->name,
-                        ], 400);
-                    }
-                    $product->stock_quantity -= $item['quantity'];
-                    $product->save();
-                }
-            }
-    
-            // Update the sub-order total
-            $subOrder->sub_total += $effectivePrice * $item['quantity'];
-            $subOrder->save();
-    
-            // Add to the order's total price
-            $totalPrice += $effectivePrice * $item['quantity'];
-        }
-    
-        // Step 2: Remove order items that are no longer in the request
-        foreach ($existingOrderItems as $existingItem) {
-            if (!$newOrderItems->pluck('product_id')->contains($existingItem->product_id)) {
-                $subOrder = $existingItem->subOrder;
-    
-                if ($order->order_status === 'pending') {
-                    // Adjust product stock to add back the returned stock
-                    $product = $existingItem->product;
-                    $product->stock_quantity += $existingItem->quantity;
-                    $product->save();
-                }
-    
-                $subOrder->sub_total -= $existingItem->price * $existingItem->quantity;
-                $existingItem->delete();
-    
-                // Delete subOrder if it has no items left
-                if ($subOrder->orderItems()->count() === 0) {
-                    $subOrder->delete();
-                } else {
-                    $subOrder->save();
-                }
-            }
-        }
-    
-        // Step 3: Update the total price of the order
-        $order->update(['total_price' => $totalPrice]);
-    
-        // Step 4: Check if the order has no items left (if it's empty) and the status is 'cart'
-        if ($newOrderItems->isEmpty() && $order->order_status === 'cart') {
-            // Delete the order if it's empty and its status is 'cart'
-            $order->delete();
-    
-            return response()->json([
-                'message' => 'Order deleted as it is empty and in cart status.',
-            ], 200);
-        }
-            $order_details=$order->orderItems;
-        return response()->json([
-            'message' => 'Order updated successfully.',
-            'order_details' => new OrderResource($order),
-        ], 200);
-    }
-    
 
+        return response()->json(["order_details" => new OrderResource($order)]);
+    }
 
     /**
      * Cancel a sub-order.
      */
-    public function cancelSubOrder($id)
-    {
-        $subOrder = SubOrder::findOrFail($id);
-        $this->authorize('update', $subOrder->order);
-
-        if ($subOrder->order_status !== 'cart') {
-            return response()->json(['message' => 'Only cart sub-orders can be canceled.'], 400);
-        }
-
-        $subOrder->update(['order_status' => 'canceled']);
-
-        $mainOrder = $subOrder->order;
-        $mainOrder->total_price -= $subOrder->sub_total;
-        $mainOrder->save();
-
-        $activeSubOrders = $mainOrder->subOrders()->where('order_status', '!=', 'canceled')->count();
-
-        if ($activeSubOrders === 0) {
-            $mainOrder->update(['order_status' => 'canceled']);
-        }
-
-        return response()->json([
-            'message' => 'Sub-order canceled successfully.',
-            'main_order' => $mainOrder,
-            'sub_order' => $subOrder,
-        ], 200);
-    }
 
     /**
      * Cancel the entire order.
@@ -306,12 +54,12 @@ class OrderController extends Controller
     public function cancelOrder($id)
     {
         $order = Order::findOrFail($id);
-        try{
+        try {
             $this->authorize('delete', $order);
-        }catch(Exception $e){
-           return response()->json(['message' => 'Unauthorized action']);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Unauthorized action']);
         }
-        
+
 
         if ($order->order_status !== 'pending') {
             return response()->json(['message' => 'Only pending orders can be canceled.'], 400);
@@ -333,30 +81,36 @@ class OrderController extends Controller
     /**
      * Submit the order, changing its status from cart to pending.
      */
-    public function submit($id)
-{
-    // Find the order with its related suborders and order items
-    $order = Order::with('subOrders.orderItems.product')->findOrFail($id);
-    try{
-        // $this->authorize('update', $order);
-    }catch(Exception $e){
-        return response()->json([
-            'message' => 'Unauthorized action'
-        ]);
-    }
-    
+    public function submitCart()
+    {
+        // Get the authenticated user's ID
+        $userId = auth()->id();
 
-    // Ensure the order is still in the 'cart' status
-    if ($order->order_status !== 'cart') {
-        return response()->json(['message' => 'Only cart orders can be submitted.'], 400);
-    }
+        // Find the order with order_status 'cart' and ensure it belongs to the authenticated user
+        $order = Order::with(['orderItems.product'])
+            ->where('user_id', $userId)
+            ->where('order_status', 'cart')
+            ->first();
 
-    // Update the order status to 'pending'
-    $order->update(['order_status' => 'pending']);
+        // Check if the order exists
+        if (!$order) {
+            return response()->json(['message' => 'No cart order found.'], 404);
+        }
 
-    // Loop through suborders and order items to update product stock quantity
-    foreach ($order->subOrders as $subOrder) {
-        foreach ($subOrder->orderItems as $orderItem) {
+        try {
+            // Check if the user is authorized to update the order
+            $this->authorize('update', $order);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Unauthorized action.',
+            ], 403);
+        }
+
+        // Update the order status to 'pending'
+        $order->update(['order_status' => 'pending']);
+
+        // Loop through order items to update product stock quantity
+        foreach ($order->orderItems as $orderItem) {
             $product = $orderItem->product;
 
             // Check if the product stock is sufficient before reducing the quantity
@@ -371,30 +125,24 @@ class OrderController extends Controller
             $product->save();
         }
 
-        // Update suborder status to 'pending'
-        $subOrder->update(['order_status' => 'pending']);
+        // Return the updated order data
+        return response()->json([
+            'message' => 'Order submitted successfully.',
+            'order' => new OrderResource($order),
+        ], 200);
     }
 
-    // Return the updated order data
-    return response()->json([
-        'message' => 'Order submitted successfully.',
-        'order' => new OrderResource($order),
-    ], 200);
-}
 
 
     public function getCart()
-    {   
-        // Use Auth::user() to get the currently authenticated user
+    {
         $user = Auth::user();
-        // return $user;
-        // Get all orders with status 'cart' for the authenticated user
         $cartOrders = Order::where('user_id', $user->id)
-                           ->where('order_status', 'cart')
-                           ->with('orderItems') 
-                           ->get();
+            ->where('order_status', 'cart')
+            ->with('orderItems')
+            ->get();
         // return $cartOrders;
-                           if(!$cartOrders){
+        if (!$cartOrders) {
             return response()->json([
                 "message" => "The cart is empty"
             ]);
@@ -402,5 +150,280 @@ class OrderController extends Controller
         // // Return the cart orders with total price as a JSON response
         return response()->json(["order_details" => OrderResource::collection($cartOrders)]);
     }
-  
+
+
+    // Function to add items to the cart
+    public function addToCart(StoreOrderRequest $request)
+    {
+
+        $userId = auth()->id();
+        $validated = $request->validated();
+        $product = Product::findOrFail($validated['product_id']);
+        $quantity = 1;
+        if (!$product->hasSufficientStock($quantity)) {
+            return response()->json([
+                'message' => 'Insufficient stock for the selected product.',
+            ], 400);
+        }
+
+        $order = Order::where('user_id', $userId)
+            ->where('order_status', 'cart')
+            ->first();
+
+        if (!$order) {
+            $order = Order::create([
+                'user_id' => $userId,
+                'order_status' => 'cart',
+                'total_price' => 0,
+            ]);
+        }
+
+        // Check if the product is already in the cart
+        $existingOrderItem = $order->orderItems()
+            ->where('product_id', $product->id)
+            ->first();
+
+        if ($existingOrderItem) {
+            return response()->json([
+                'message' => 'Item already exists in the cart.',
+            ], 400);
+        }
+
+        // Add a new item with a quantity of 1
+        $effectivePrice = $product->effective_price;
+
+        $order->orderItems()->create([
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+            'price' => $effectivePrice,
+        ]);
+
+        $order->update([
+            'total_price' => $order->total_price + ($effectivePrice * $quantity),
+        ]);
+        $order_details = $order->orderItems;
+        return response()->json([
+            'message' => 'Item added to cart successfully.',
+            'order_details' => new OrderResource($order),
+        ], 200);
+    }
+
+    public function removeFromCart(Request $request)
+    {
+        $userId = auth()->id();
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $order = Order::where('user_id', $userId)
+            ->where('order_status', 'cart')
+            ->first();
+
+        if (!$order) {
+            return response()->json([
+                'message' => 'No active cart found.',
+            ], 404);
+        }
+
+        $orderItem = $order->orderItems()
+            ->where('product_id', $validated['product_id'])
+            ->first();
+
+        if (!$orderItem) {
+            return response()->json([
+                'message' => 'Product not found in the cart.',
+            ], 404);
+        }
+
+        // Update the total price
+        $order->update([
+            'total_price' => $order->total_price - ($orderItem->price * $orderItem->quantity),
+        ]);
+
+        // Remove the item
+        $orderItem->delete();
+
+        // If the cart is now empty, delete the order
+        if ($order->orderItems()->count() === 0) {
+            $order->delete();
+
+            return response()->json([
+                'message' => 'Cart is now empty and has been deleted.',
+            ], 200);
+        }
+        $order_details = $order->orderItems;
+        return response()->json([
+            'message' => 'Item removed from cart successfully.',
+            'order_details' => new OrderResource($order),
+        ], 200);
+    }
+
+    public function updateCart(UpdateOrderRequest $request)
+    {
+
+        $userId = auth()->id();
+        $validated = $request->validated();
+
+        $incomingItems = collect($validated['order_items']);
+        $order = Order::where('user_id', $userId)
+            ->where('order_status', 'cart')
+            ->first();
+
+
+        try {
+            $this->authorize('update', $order);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Unauthorized action'
+            ]);
+        }
+
+        if (!$order) {
+            return response()->json([
+                'message' => 'No active cart found.',
+            ], 404);
+        }
+
+        $existingItems = $order->orderItems()->get();
+        $totalPrice = 0;
+
+        foreach ($incomingItems as $item) {
+            $product = Product::find($item['product_id']);
+
+            if (!$product) {
+                // If product is not found, return an error message but continue with the loop
+                return response()->json([
+                    'message' => "Product with ID {$item['product_id']} does not exist.",
+                ], 404);
+            }
+
+            // Check stock availability
+            if (!$product->hasSufficientStock($item['quantity'])) {
+                return response()->json([
+                    'message' => "Insufficient stock for product ID {$item['product_id']}.",
+                ], 400);
+            }
+
+            $orderItem = $existingItems->where('product_id', $item['product_id'])->first();
+            $effectivePrice = $product->effective_price;
+
+            if ($orderItem) {
+                // Update the existing item
+                $orderItem->update([
+                    'quantity' => $item['quantity'],
+                    'price' => $effectivePrice,
+                ]);
+            } else {
+                // If the item is not in the cart, return a message but continue with the loop
+                return response()->json([
+                    'message' => "Product with ID {$item['product_id']} does not exist in the cart.",
+                ], 404);
+            }
+
+            // Calculate total price based on updated quantities and prices
+            $totalPrice += $effectivePrice * $item['quantity'];
+        }
+
+
+        foreach ($existingItems as $orderItem) {
+            $totalPrice += $orderItem->price * $orderItem->quantity;
+        }
+
+
+        // Update the order's total price
+        $order->update(['total_price' => $totalPrice]);
+        $order_details = $order->orderItems;
+        return response()->json([
+            'message' => 'Cart updated successfully.',
+            'order_details' => new OrderResource($order),
+        ], 200);
+    }
+
+
+
+
+    public function updatePendingOrder(UpdateOrderRequest $request)
+    {
+        $userId = auth()->id(); // Assuming the user is authenticated
+        $validated = $request->validated();
+
+        $incomingItems = collect($validated['order_items']);
+        $order = Order::where('user_id', $userId)
+            ->where('order_status', 'pending')
+            ->first();
+
+        try {
+            $this->authorize('update', $order);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Unauthorized action'
+            ]);
+        }
+
+        if (!$order) {
+            return response()->json(['message' => 'No pending order found.'], 404);
+        }
+
+        $existingItems = $order->orderItems()->get();
+        $totalPrice = 0;
+
+        foreach ($incomingItems as $item) {
+            $product = Product::findOrFail($item['product_id']);
+            $orderItem = $existingItems->where('product_id', $item['product_id'])->first();
+
+            if ($orderItem) {
+                // Update quantity and adjust stock
+                $quantityDiff = $item['quantity'] - $orderItem->quantity;
+
+                if ($quantityDiff > 0 && $product->stock_quantity < $quantityDiff) {
+                    return response()->json([
+                        'message' => 'Insufficient stock for product: ' . $product->name,
+                    ], 400);
+                }
+
+                $product->stock_quantity -= $quantityDiff;
+                $product->save();
+
+                $orderItem->update([
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                ]);
+            } else {
+                // Add new item
+                if ($product->stock_quantity < $item['quantity']) {
+                    return response()->json([
+                        'message' => 'Insufficient stock for product: ' . $product->name,
+                    ], 400);
+                }
+
+                $order->orderItems()->create([
+                    'product_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'price' => $product->price,
+                ]);
+
+                $product->stock_quantity -= $item['quantity'];
+                $product->save();
+            }
+
+            $totalPrice += $product->price * $item['quantity'];
+        }
+
+        // Remove items not in the incoming list and adjust stock
+        $existingItems->whereNotIn('product_id', $incomingItems->pluck('product_id')->toArray())
+            ->each(function ($orderItem) {
+                $product = Product::findOrFail($orderItem->product_id);
+                $product->stock_quantity += $orderItem->quantity;
+                $product->save();
+
+                $orderItem->delete();
+            });
+
+        $order->update(['total_price' => $totalPrice]);
+        $order_details = $order->orderItems;
+        return response()->json([
+            'message' => 'Pending order updated successfully.',
+            'order_details' => new OrderResource($order),
+        ], 200);
+    }
 }

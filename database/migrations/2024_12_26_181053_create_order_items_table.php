@@ -15,16 +15,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('sub_order_id')->nullable()->constrained()->onDelete('cascade');
             $table->integer('quantity');
             $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }
-    
+
     public function down()
     {
         Schema::dropIfExists('order_items');
     }
-    
 };

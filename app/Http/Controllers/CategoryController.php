@@ -13,19 +13,19 @@ class CategoryController extends Controller
     use AuthorizesRequests;
     public function index()
     {
-        $this->authorize('viewAny',User::class);
-        $categories=Category::all();
+        $categories = Category::all();
         return $categories;
     }
     public function store(CreateCategoryRequest $request)
     {
-        $this->authorize('create',User::class);
-        $data=$request->validated();
+        $this->authorize('create', User::class);
+        $data = $request->validated();
         Category::create($data);
     }
-    public function destroy(Category $category)
+    public function destroy($id)
     {
-        $this->authorize('delete',[User::class,$category]);
+        $category = Category::find($id);
+        $this->authorize('delete', [User::class, $category]);
         $category->delete();
     }
 }

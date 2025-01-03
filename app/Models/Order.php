@@ -19,10 +19,7 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function subOrders()
-    {
-        return $this->hasMany(SubOrder::class);
-    }
+
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);

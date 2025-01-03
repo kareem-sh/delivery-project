@@ -14,10 +14,7 @@ class StoreOrderRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'order_items' => 'required|array',
-            'order_items.*.product_id' => 'required|exists:products,id',
-            'order_items.*.quantity' => 'required|integer|min:1',
+            'product_id' => 'required|exists:products,id'
         ];
     }
 }

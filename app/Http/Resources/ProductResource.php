@@ -11,7 +11,7 @@ class ProductResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'store_id' => new StoreResource(Store::find($this->store_id)),
+            'store' => new StoreResource(Store::find($this->store_id)),
             'is_favorite' => $this->is_favorite($this->id),
             'is_cart' => $this->is_cart($this->id),
             'category' => Category::find($this->category_id)->name,

@@ -79,13 +79,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}stores/3/products/odio",
+					"raw": "{{URL}}stores/3/categories/odio",
 					"host": [
 						"{{URL}}stores"
 					],
 					"path": [
 						"3",
-						"products",
+						"categories",
 						"odio"
 					]
 				}

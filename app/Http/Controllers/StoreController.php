@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\StoresResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
@@ -21,7 +22,7 @@ class StoreController extends Controller
     public function index()
     {
         $stores = Store::all();
-        return $stores;
+        return StoresResource::collection(($stores));
     }
     public function store(CreateStoreRequest $request)
     {
@@ -40,7 +41,7 @@ class StoreController extends Controller
     public function show($id)
     {
         $store = Store::find($id);
-        return $store;
+        return response()->json(new StoresResource($store));
     }
     public function updateStore(UpdateStoreRequest $request, $id)
     {
@@ -76,7 +77,7 @@ class StoreController extends Controller
         $stores = Store::where('name', 'LIKE', '%' . $sub . '%')->get();
         $products = Product::where('name', 'LIKE', '%' . $sub . '%')->get();
         return response()->json([
-            "stores" => $stores,
+            "stores" => StoresResource::collection(($stores)),
             "products" => ProductResource::collection(($products))
         ]);
     }

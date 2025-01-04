@@ -67,9 +67,6 @@ class OrderController extends Controller
 
         $order->update(['order_status' => 'canceled']);
 
-        foreach ($order->subOrders as $subOrder) {
-            $subOrder->update(['order_status' => 'canceled']);
-        }
 
         return response()->json([
             'message' => 'Order canceled successfully.',

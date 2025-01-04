@@ -51,9 +51,12 @@ class ProductController extends Controller
     }
     public function category(string $name)
     {
-        //$this->authorize('viewAny');
-        $category = Category::where('name', $name)->first();
-        $products = $category->products;
+        if ($name == "All") {
+            $products = Product::all();
+        } else {
+            $category = Category::where('name', $name)->first();
+            $products = $category->products;
+        }
         return ProductResource::collection(($products));
     }
     public function offer()

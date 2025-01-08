@@ -15,11 +15,12 @@ class UpdateStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name"=>"sometimes|max:255",
-            "latitude"=>"sometimes",
-            "longitude"=>"sometimes",
-            "image"=>"sometimes",
-            "logo_color"=>"sometimes|max:10",
+            "name" => "sometimes|max:255",
+            "name_ar" => "sometimes|max:255",
+            "latitude" => "sometimes",
+            "longitude" => "sometimes",
+            "image" => "sometimes",
+            "logo_color" => "sometimes|max:10",
         ];
     }
 }

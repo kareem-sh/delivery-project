@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
@@ -16,7 +14,9 @@ return new class extends Migration
             $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->string('name');
+            $table->string('name_ar');
             $table->text('description');
+            $table->text('description_ar');
             $table->decimal('price', 10, 2);
             $table->integer('stock_quantity');
             $table->string('image_url')->nullable();

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -14,9 +15,16 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = collect();
-        $categories->push("All");
-        foreach (Category::all() as $category) {
-            $categories->push($category->name);
+        if (Auth::user()->lang == "en") {
+            $categories->push("All");
+            foreach (Category::all() as $category) {
+                $categories->push($category->name);
+            }
+        } else {
+            $categories->push("الكل");
+            foreach (Category::all() as $category) {
+                $categories->push($category->name_ar);
+            }
         }
         return collect($categories)->values();
     }

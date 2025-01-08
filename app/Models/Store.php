@@ -8,10 +8,11 @@ use Illuminate\Notifications\Notifiable;
 
 class Store extends Model
 {
-    use HasFactory,Notifiable;
+    use HasFactory, Notifiable;
     protected $fillable = [
         'user_id',
         'name',
+        'name_ar',
         'latitude',
         'longitude',
         'image',

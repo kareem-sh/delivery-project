@@ -14,14 +14,16 @@ class Product extends Model
         'store_id',
         'category_id',
         'name',
+        'name_ar',
         'description',
+        'description_ar',
         'price',
         'stock_quantity',
         'image_url',
         'discount_value',
         'discount_start',
         'discount_end',
-        'delivery_period'
+        'delivery_period',
     ];
 
     /**

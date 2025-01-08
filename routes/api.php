@@ -11,13 +11,6 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
 
-Route::controller(ProductController::class)->group(function () {
-    Route::get('products/category/{name}', 'category')->middleware('auth:sanctum');
-    Route::get('products.offer', 'offer')->middleware('auth:sanctum');
-    Route::get('products/range/{startRange}/{endRange}', 'priceRange')->middleware('auth:sanctum');
-    Route::get('products/{id}', 'show')->middleware('auth:sanctum');
-})->middleware('auth:sanctum');
-
 Route::prefix('/auth')->group(function () {
     //Take the fcm token and check the need for the user phone number
 
@@ -70,28 +63,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
 // Get the cart orders for a specific user
 Route::get('/cart', [OrderController::class, 'getCart'])->middleware('auth:sanctum');
 
-Route::get('categories', [CategoryController::class, 'index']);
-Route::controller(CategoryController::class)->group(function () {
-    Route::post('categories', 'store');
-    Route::delete('categories/{id}', 'destroy');
-})->middleware('auth:sanctum');
+Route::apiResource('categories', CategoryController::class)->middleware('auth:sanctum');
 
 Route::controller(StoreController::class)->group(function () {
     Route::get('stores/{id}/categories/{name}', 'ProductsAsCategory')->middleware('auth:sanctum');
     Route::get('search/{prefix}', 'search')->middleware('auth:sanctum');
-    Route::get('stores', 'index');
-    Route::get('stores/{id}', 'show');
-    Route::get('stores/{id}/categories', 'CategoryOfStore');
-});
-Route::controller(StoreController::class)->group(function () {
-    Route::post('stores/update/{id}', 'updateStore');
-    Route::post('stores', 'store');
-    Route::delete('stores/{id}', 'destroy');
+    Route::get('stores/{id}/categories', 'CategoryOfStore')->middleware('auth:sanctum');
+    Route::post('stores/update/{id}', 'updateStore')->middleware('auth:sanctum');
 })->middleware('auth:sanctum');
-
+Route::apiResource('stores', StoreController::class)->middleware('auth:sanctum');
 
 Route::controller(ProductController::class)->group(function () {
     Route::post('products/update/{id}', 'updateProduct');
-    Route::post('products', 'store');
-    Route::delete('products/{id}', 'destroy');
+    Route::get('products/category/{name}', 'category')->middleware('auth:sanctum');
+    Route::get('products.offer', 'offer')->middleware('auth:sanctum');
+    Route::get('products/range/{startRange}/{endRange}', 'priceRange')->middleware('auth:sanctum');
 })->middleware('auth:sanctum');
+Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');

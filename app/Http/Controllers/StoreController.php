@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateStoreRequest;
 use App\Http\Requests\UpdateStoreRequest;
+use App\Http\Resources\ArProductResource;
+use App\Http\Resources\ArStoreResource;
 use App\Http\Resources\ProductResource;
-use App\Http\Resources\StoresResource;
+use App\Http\Resources\StoreResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
@@ -13,8 +15,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Collection;
 
 class StoreController extends Controller
 {
@@ -22,7 +24,10 @@ class StoreController extends Controller
     public function index()
     {
         $stores = Store::all();
-        return StoresResource::collection(($stores));
+        if (Auth::user()->lang == "en") {
+            return StoreResource::collection(($stores));
+        }
+        return ArStoreResource::collection(($stores));
     }
     public function store(CreateStoreRequest $request)
     {
@@ -31,8 +36,8 @@ class StoreController extends Controller
         if ($request->hasFile('image')) {
             $image = str::random(32) . "." . $request->image->getClientOriginalExtension();
             Storage::disk('public')->put($image, file_get_contents($request->image));
+            $data->image = $image;
         }
-        $data->image = $image;
         Store::create([
             "user_id" => $request->user()->id,
             $data
@@ -41,7 +46,10 @@ class StoreController extends Controller
     public function show($id)
     {
         $store = Store::find($id);
-        return response()->json(new StoresResource($store));
+        if (Auth::user()->lang == "en") {
+            return response()->json(new StoreResource($store));
+        }
+        return response()->json(new ArStoreResource($store));
     }
     public function updateStore(UpdateStoreRequest $request, $id)
     {
@@ -51,8 +59,8 @@ class StoreController extends Controller
         if ($request->hasFile('image')) {
             $image = str::random(32) . "." . $request->image->getClientOriginalExtension();
             Storage::disk('public')->put($image, file_get_contents($request->image));
+            $data->image = $image;
         }
-        $data->image = $image;
         $store->update($data);
     }
     public function destroy($id)
@@ -63,34 +71,64 @@ class StoreController extends Controller
     }
     public function ProductsAsCategory($id, string $name)
     {
-        if ($name == "All") {
-            $store = Store::find($id);
+        $store = Store::find($id);
+        if (Auth::user()->lang == "en") {
+            if ($name == "All") {
+                $products = $store->products;
+            } else {
+                $category = Category::where('name', $name)->first();
+                $products = Product::where('category_id', $category->id)->where('store_id', $id)->get();
+            }
+            return ProductResource::collection(($products));
+        }
+        if ($name == "الكل") {
             $products = $store->products;
         } else {
-            $category = Category::where('name', $name)->first();
+            $category = Category::where('name_ar', $name)->first();
             $products = Product::where('category_id', $category->id)->where('store_id', $id)->get();
         }
-        return ProductResource::collection(($products));
+        return ArProductResource::collection(($products));
     }
     public function search(string $sub)
     {
-        $stores = Store::where('name', 'LIKE', '%' . $sub . '%')->get();
-        $products = Product::where('name', 'LIKE', '%' . $sub . '%')->get();
+        if (preg_match('/[A-Za-z]/', $sub)) //if sub string is writed in english
+        {
+            $stores = Store::where('name', 'LIKE', '%' . $sub . '%')->get();
+            $products = Product::where('name', 'LIKE', '%' . $sub . '%')->get();
+        } else {
+            $stores = Store::where('name_ar', 'LIKE', '%' . $sub . '%')->get();
+            $products = Product::where('name_ar', 'LIKE', '%' . $sub . '%')->get();
+        }
+        if (Auth::user()->lang == "en") {
+            return response()->json([
+                "stores" => StoreResource::collection(($stores)),
+                "products" => ProductResource::collection(($products))
+            ]);
+        }
         return response()->json([
-            "stores" => StoresResource::collection(($stores)),
-            "products" => ProductResource::collection(($products))
+            "stores" => ArStoreResource::collection(($stores)),
+            "products" => ArProductResource::collection(($products))
         ]);
     }
     public function categoryOfStore($id)
     {
         $stores = Store::find($id);
         $categories = collect();
-        $categories->push("All");
-        foreach ($stores->products as $product) {
-            $category = Category::find($product->category_id);
-            $categories->push($category->name);
+        if (Auth::user()->lang == "en") {
+            $categories->push("All");
+            foreach ($stores->products as $product) {
+                $category = Category::find($product->category_id);
+                $categories->push($category->name);
+            }
+            $category = $categories->unique();
+        } else {
+            $categories->push("الكل");
+            foreach ($stores->products as $product) {
+                $category = Category::find($product->category_id);
+                $categories->push($category->name_ar);
+            }
+            $category = $categories->unique();
         }
-        $category = $categories->unique();
         return collect($category)->values();
     }
 }

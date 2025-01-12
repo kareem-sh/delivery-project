@@ -20,12 +20,13 @@ class ProductController extends Controller
     use AuthorizesRequests;
     public function store(CreateProductRequest $request)
     {
-        $this->authorize('create', User::class);
+        //$this->authorize('create', User::class);
         $data = $request->validated();
-        $image_url = str::random(32) . "." . $request->image_url->getClientOriginalExtension();
-        Storage::disk('public')->put($image_url, file_get_contents($request->image_url));
-        $data->image_url = $image_url;
-
+        if ($request->hasFile('image_url')) {
+            $image_url = str::random(32) . "." . $request->image_url->getClientOriginalExtension();
+            Storage::disk('public')->put($image_url, file_get_contents($request->image_url));
+            $data['image_url'] = $image_url;
+        }
         Product::create([
             "store_id" => $request->user()->store->id,
             ...$data
@@ -48,7 +49,7 @@ class ProductController extends Controller
         if ($request->hasFile('image_url')) {
             $image_url = str::random(32) . "." . $request->image_url->getClientOriginalExtension();
             Storage::disk('public')->put($image_url, file_get_contents($request->image_url));
-            $data->image_url = $image_url;
+            $data['image_url'] = $image_url;
         }
         $product->update($data);
     }

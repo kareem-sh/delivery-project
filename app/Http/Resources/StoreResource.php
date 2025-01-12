@@ -15,11 +15,12 @@ class StoreResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            "id" => $this->id,
             "name" => $this->name,
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
             "logo_color" => $this->logo_color,
-            "image" => $this->image,
+            "image" => $this->image ? asset('storage/' . $this->image) : null,
             "products count" => $this->products->count()
         ];
     }

@@ -9,11 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Services\TwilioService;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ArProductResource;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\UserResource;
 use Exception;
+use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -139,7 +142,6 @@ class UserController extends Controller
 
         return response()->json(['message' => 'User deleted successfully'], 200);
     }
-
     public function toggle_favorites(CreateFavoriteRequest $request)
     {
         try {
@@ -151,6 +153,7 @@ class UserController extends Controller
         Auth::user()->toggleToFavorites($product_ids);
         return response()->json(['message' => 'Favorites toggled successfully'], 200);
     }
+
 
     public function favorites()
     {
@@ -170,10 +173,15 @@ class UserController extends Controller
                 'message' => "There are no products in favorite list"
             ]);
         }
-
-        return response()->json([
-            "favorites" => FavoriteResource::collection($user->favorites)
-        ]);
+        if (Auth::user()->lang == "en") {
+            return response()->json([
+                "favorites" => ProductResource::collection($user->favorites)
+            ]);
+        } else {
+            return response()->json([
+                "favorites" => ArProductResource::collection($user->favorites)
+            ]);
+        }
     }
 
     public function getUserOrders(Request $request)

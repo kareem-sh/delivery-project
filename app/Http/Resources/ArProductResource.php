@@ -28,7 +28,7 @@ class ArProductResource extends JsonResource
             'description' => $this->description_ar,
             'price' => $this->convertToArabicNumbers($this->price),
             'stock_quantity' => $this->convertToArabicNumbers($this->stock_quantity),
-            'image_url' => $this->image_url,
+            'image_url' =>  $this->image_url ? asset('storage/' . $this->image_url) : null,
             'delivery_period' => $this->convertToArabicNumbers($this->delivery_period),
             'discount_value' => $this->convertToArabicNumbers($this->discount_value),
             'discount_start' => $this->convertToArabicNumbers($this->discount_start),

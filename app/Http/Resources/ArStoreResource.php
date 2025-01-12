@@ -23,7 +23,7 @@ class ArStoreResource extends JsonResource
             "latitude" => $this->latitude,
             "longitude" => $this->longitude,
             "logo_color" => $this->logo_color,
-            "image" => $this->image,
+            "image" => $this->image ? asset('storage/' . $this->image) : null,
             "products count" => $this->convertToArabicNumbers($this->products->count())
         ];
     }

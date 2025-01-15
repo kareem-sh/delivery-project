@@ -25,7 +25,7 @@ class OrderController extends Controller
 
     public function index()
     {
-        return Order::with('ordeItems')->get();
+        return Order::with('orderItems')->get();
     }
 
     /**

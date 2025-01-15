@@ -7,14 +7,14 @@
 	},
 	"item": [
 		{
-			"name": "get Users",
+			"name": "get all user",
 			"request": {
 				"auth": {
 					"type": "bearer",
 					"bearer": [
 						{
 							"key": "token",
-							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"value": "{{token}}",
 							"type": "string"
 						}
 					]
@@ -28,7 +28,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/users",
+					"raw": "http://127.0.0.1:8000/api/users/orders?status=",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -39,13 +39,13 @@
 					"port": "8000",
 					"path": [
 						"api",
-						"users"
+						"users",
+						"orders"
 					],
 					"query": [
 						{
-							"key": "",
-							"value": null,
-							"disabled": true
+							"key": "status",
+							"value": ""
 						}
 					]
 				}
@@ -384,13 +384,19 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "1|1fX1baI13aEpz28ZAoyE9mHv75Mjxl8ViSjYVTUx9e6f2200",
+							"value": "4|56KL8HSzjuV51Aiq5UNQjPnLtRs9Jk9hvnI9thvz948ba8f2",
 							"type": "string"
 						}
 					]
 				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://127.0.0.1:8000/api/users/favorites",
 					"protocol": "http",
@@ -1159,30 +1165,47 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "2|wQWWsUYiDeBNY5aqAGmqbmiPpLooevGppxez7Cwx049dcf02",
+							"value": "4|56KL8HSzjuV51Aiq5UNQjPnLtRs9Jk9hvnI9thvz948ba8f2",
 							"type": "string"
 						}
 					]
 				},
-				"method": "PUT",
+				"method": "POST",
 				"header": [
 					{
 						"key": "Accept",
 						"value": "application/json",
 						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"full_name\": \"New Name \"\r\n\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "full_name",
+							"value": "Ha",
+							"type": "text"
+						},
+						{
+							"key": "image",
+							"type": "file",
+							"src": "postman-cloud:///1efc4448-58a7-4a80-ad6c-d87f06caa33f"
+						},
+						{
+							"key": "_method",
+							"value": "PUT",
+							"type": "text"
 						}
-					}
+					]
 				},
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/users/1",
+					"raw": "http://127.0.0.1:8000/api/users/16",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1194,7 +1217,7 @@
 					"path": [
 						"api",
 						"users",
-						"1"
+						"16"
 					]
 				}
 			},
@@ -1421,7 +1444,7 @@
 			]
 		},
 		{
-			"name": "New Request",
+			"name": "delete user",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1650,6 +1673,146 @@
 					],
 					"cookie": [],
 					"body": "{\n    \"message\": \"User deleted successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "get user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}users/1",
+					"host": [
+						"{{URL}}users"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}users/1",
+							"host": [
+								"{{URL}}users"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 15 Jan 2025 15:50:40 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User returned successfully\",\n    \"user\": {\n        \"id\": 1,\n        \"full_name\": \"Myles Kreiger PhD\",\n        \"phone_number\": \"1-240-437-1165\",\n        \"lang\": \"en\",\n        \"image\": null,\n        \"role\": \"admin\",\n        \"latitude\": \"77.5149580\",\n        \"longitude\": \"-164.6982200\",\n        \"theme_mode\": \"dark\",\n        \"allow_gps\": 0,\n        \"allow_notifications\": 1,\n        \"unreadNotificationsCount\": 0\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "get user notification",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"description": "Return the Auth user notification by recent, return the latest notification first"
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}users/notifications",
+							"host": [
+								"{{URL}}users"
+							],
+							"path": [
+								"notifications"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Host",
+							"value": "127.0.0.1:8000"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.2.12"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, private"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 15 Jan 2025 17:39:59 GMT"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Notifications\": [\n        {\n            \"title\": \"Order Status Change\",\n            \"body\": \"Your order #31 has been delivered.\",\n            \"created_at\": \"2025-01-15T17:39:02.586938Z\"\n        },\n        {\n            \"title\": \"Order Status Change\",\n            \"body\": \"Your order #31 is being prepared.\",\n            \"created_at\": \"2025-01-15T17:38:34.692696Z\"\n        },\n        {\n            \"title\": \"Order Status Change\",\n            \"body\": \"Your order #31 is on the way!\",\n            \"created_at\": \"2025-01-15T17:38:34.962542Z\"\n        }\n    ]\n}"
 				}
 			]
 		}

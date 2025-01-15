@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateFavoriteRequest;
 use App\Http\Resources\FavoriteResource;
+use App\Http\Resources\NotificationResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -37,12 +38,12 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $this->authorize('view', User::class);
+            $this->authorize('view', Auth::user());
         } catch (Exception $e) {
             return response()->json(['message' => 'This action is unauthorized.'], 401);
         }
 
-        return UserResource::collection(User::paginate(25));
+        return UserResource::collection(User::all());
     }
 
     public function store(CreateUserRequest $request)
@@ -226,9 +227,9 @@ class UserController extends Controller
     public function getUserNotifications()
     {
         $user = Auth::user();
-        $user->markAllNotificationsAsRead;
+        $user->markAllNotificationsAsRead();
         return response()->json([
-            'Notifications' => $user->notifications->latest(),
+            'Notifications' => NotificationResource::collection($user->notifications),
         ], 200);
     }
 }

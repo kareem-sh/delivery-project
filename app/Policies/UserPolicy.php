@@ -7,7 +7,8 @@ use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {
-    public function before(User $user){
+    public function before(User $user)
+    {
         return $user->role == 'admin' ? true : null;
     }
     public function viewAny(User $user): bool

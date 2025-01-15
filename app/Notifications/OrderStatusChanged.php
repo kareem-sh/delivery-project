@@ -31,12 +31,25 @@ class OrderStatusChanged extends Notification implements ShouldQueue
 
     public function toArray($notifiable)
     {
+        $statusMessage = match ($this->status) {
+            'preparing' => "Your order #{$this->order->id} is being prepared.",
+            'on the way' => "Your order #{$this->order->id} is on the way!",
+            'delivered' => "Your order #{$this->order->id} has been delivered.",
+            'canceled' => "Your order #{$this->order->id} has been deleted successfully.",
+            'updated' => "Your order #{$this->order->id} has been updated. Please review your order details.",
+            'created' => "Your order #{$this->order->id} has been created and is pending.",
+            default => "Your order #{$this->order->id} status has been updated.",
+        };
+
         return [
             'order_id' => $this->order->id,
             'status' => $this->status,
-            'message' => 'Your order status has been updated.',
+            'title' => 'Order Status Change',
+            'body' => $statusMessage,
+            'created_at' => now(),
         ];
     }
+
 
     public function toFirebase($notifiable)
     {
@@ -48,8 +61,9 @@ class OrderStatusChanged extends Notification implements ShouldQueue
                 'preparing' => "Your order #{$this->order->id} is being prepared.",
                 'on the way' => "Your order #{$this->order->id} is on the way!",
                 'delivered' => "Your order #{$this->order->id} has been delivered.",
-                'canceled' => "Your order #{$this->order->id} has been canceled. We’re sorry for the inconvenience.",
+                'canceled' => "Your order #{$this->order->id} has been deleted successfully.",
                 'updated' => "Your order #{$this->order->id} has been updated. Please review your order details.",
+                'created' => "Your order #{$this->order->id} has been created and is pending.",
                 default => "Your order #{$this->order->id} status has been updated.",
             };
 

@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/favorites', [UserController::class, 'favorites']);
     Route::post('users/toggle_favorites', [UserController::class, 'toggle_favorites']);
     Route::get('users/orders', [UserController::class, 'getUserOrders']);
+    Route::get('users/notifications', [UserController::class, 'getUserNotifications']);
     Route::apiResource('/users', UserController::class);
 });
 Route::middleware(['auth:sanctum'])->group(function () {

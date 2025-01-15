@@ -65,13 +65,14 @@ class User extends Authenticatable
 
     public function unreadNotifications()
     {
-        return $this->notifications()->where('is_read', false)->get();
+        return $this->notifications()->where('is_read', false);
     }
 
     public function markAllNotificationsAsRead()
     {
-        $this->unreadNotifications()->update(['is_read' => true]);
+        $this->unreadNotifications()->where('is_read', false)->update(['is_read' => true]);
     }
+
 
     public function orders()
     {
@@ -85,6 +86,6 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->morphMany(Notification::class, 'notifiable');
+        return $this->morphMany(Notification::class, 'notifiable')->latest();
     }
 }

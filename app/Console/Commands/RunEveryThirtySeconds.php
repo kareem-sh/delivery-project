@@ -26,16 +26,28 @@ class RunEveryThirtySeconds extends Command
 
             // Loop through each order to update its status
             foreach ($orders as $order) {
-                if ($order->created_at <= now()->subSeconds(30) && $order->order_status == "preparing") {
+                // Check if the order is still pending and update to preparing
+                if ($order->created_at <= now()->subSeconds(30) && $order->order_status == "pending") {
+                    $order->update(['order_status' => "preparing"]);
+                    $order->user->notify(new OrderStatusChanged($order, 'preparing'));
+                    Log::info("Order #{$order->id} status updated to 'preparing' and notification sent.");
+                }
+
+                // Update from preparing to on the way
+                else if ($order->created_at <= now()->subSeconds(30) && $order->order_status == "preparing") {
                     $order->update(['order_status' => "on the way"]);
                     $order->user->notify(new OrderStatusChanged($order, 'on the way'));
                     Log::info("Order #{$order->id} status updated to 'on the way' and notification sent.");
-                } elseif ($order->created_at <= now()->subSeconds(60) && $order->order_status == "on the way") {
+                }
+
+                // Update from on the way to delivered
+                elseif ($order->created_at <= now()->subSeconds(60) && $order->order_status == "on the way") {
                     $order->update(['order_status' => "delivered"]);
                     $order->user->notify(new OrderStatusChanged($order, 'delivered'));
                     Log::info("Order #{$order->id} status updated to 'delivered' and notification sent.");
                 }
             }
+
             sleep(30);
         }
     }

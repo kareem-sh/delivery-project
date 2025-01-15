@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,6 +58,21 @@ class User extends Authenticatable
         $this->favorites()->toggle($product_ids);
     }
 
+    public function unreadNotificationsCount()
+    {
+        return $this->notifications()->where('is_read', false)->count();
+    }
+
+    public function unreadNotifications()
+    {
+        return $this->notifications()->where('is_read', false)->get();
+    }
+
+    public function markAllNotificationsAsRead()
+    {
+        $this->unreadNotifications()->update(['is_read' => true]);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);
@@ -65,5 +81,10 @@ class User extends Authenticatable
     public function devices()
     {
         return $this->hasMany(Device::class);
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
     }
 }

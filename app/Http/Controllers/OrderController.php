@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderItemResource;
+use App\Notifications\OrderStatusChanged;
 use App\Models\Order;
 use App\Models\SubOrder;
 use App\Models\Product;
@@ -44,9 +45,6 @@ class OrderController extends Controller
         return response()->json(["order_details" => new OrderResource($order)]);
     }
 
-    /**
-     * Cancel a sub-order.
-     */
 
     /**
      * Cancel the entire order.
@@ -67,6 +65,8 @@ class OrderController extends Controller
 
         $order->update(['order_status' => 'canceled']);
 
+        $user = $order->user;
+        $user->notify(new OrderStatusChanged($order, 'canceled'));
 
         return response()->json([
             'message' => 'Order canceled successfully.',
@@ -121,7 +121,8 @@ class OrderController extends Controller
             $product->stock_quantity -= $orderItem->quantity;
             $product->save();
         }
-
+        $user = $order->user;
+        $user->notify(new OrderStatusChanged($order, 'created'));
         // Return the updated order data
         return response()->json([
             'message' => 'Order submitted successfully.',
@@ -417,6 +418,8 @@ class OrderController extends Controller
             });
 
         $order->update(['total_price' => $totalPrice]);
+        $user = $order->user;
+        $user->notify(new OrderStatusChanged($order, 'updated'));
         $order_details = $order->orderItems;
         return response()->json([
             'message' => 'Pending order updated successfully.',

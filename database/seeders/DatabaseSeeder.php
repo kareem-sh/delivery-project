@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\Category;
+use App\Models\Device;
 
 class DatabaseSeeder extends Seeder
 {
@@ -34,8 +35,13 @@ class DatabaseSeeder extends Seeder
         // Create users
         $users = User::factory()->count(10)->create();
 
-        // Create orders for users
+        // Create devices and orders for each user
         $users->each(function ($user) use ($stores) {
+            // Create 1-2 devices for each user
+            Device::factory()->count(rand(1, 2))->create([
+                'user_id' => $user->id,
+            ]);
+
             // Create 3 orders for each user
             $orders = Order::factory()->count(3)->create(['user_id' => $user->id]);
 

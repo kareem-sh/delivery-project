@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'theme_mode' => $this->theme_mode,
             'allow_gps' => $this->allow_gps,
             'allow_notifications' => $this->allow_notifications,
+            'unreadNotificationsCount' => $this->unreadNotificationsCount()
         ];
     }
 }

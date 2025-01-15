@@ -9,12 +9,9 @@ class OrderItemResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'product_id' => $this->product_id,
-            'product' => $this->product->name,
+
+            'product_details' => new ProductResource($this->product),
             'quantity' => $this->quantity,
-            'price' => $this->product->getEffectivePriceAttribute()
-
-
         ];
     }
 }

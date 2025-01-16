@@ -103,8 +103,8 @@ class OrderController extends Controller
             ], 403);
         }
 
-        // Update the order status to 'pending'
-        $order->update(['order_status' => 'pending']);
+        $totalItemPrice = 0;
+        $totalDeliveryCharge = 0;
 
         // Loop through order items to update product stock quantity
         foreach ($order->orderItems as $orderItem) {
@@ -120,16 +120,36 @@ class OrderController extends Controller
             // Subtract the quantity ordered from the product's stock
             $product->stock_quantity -= $orderItem->quantity;
             $product->save();
+
+            // Calculate the total item price using the effective price
+            $effectivePrice = $product->effective_price;
+            $totalItemPrice += $effectivePrice * $orderItem->quantity;
+
+            // Add delivery charge (assume a fixed charge per product for now)
+            $totalDeliveryCharge += 2000 * $orderItem->quantity; // 2000 charge per product quantity
         }
+
+        // Calculate the subtotal
+        $subtotal = $totalItemPrice + $totalDeliveryCharge;
+
+        // Update the order status to 'pending' and update prices
+        $order->update([
+            'order_status' => 'pending',
+            'items_price' => $totalItemPrice,
+            'delivery_charge' => $totalDeliveryCharge,
+            'subtotal' => $subtotal,
+        ]);
+
+        // Send notification to the user
         $user = $order->user;
         $user->notify(new OrderStatusChanged($order, 'created'));
+
         // Return the updated order data
         return response()->json([
             'message' => 'Order submitted successfully.',
             'order' => new OrderResource($order),
         ], 200);
     }
-
 
 
     public function getCart()
@@ -204,7 +224,6 @@ class OrderController extends Controller
             'delivery_charge' => $order->delivery_charge + $newDeliveryCharge,
             'subtotal' => $order->items_price + $newItemPrice + $order->delivery_charge + $newDeliveryCharge,
         ]);
-
         return response()->json([
             'message' => 'Item added to cart successfully.',
             'order_details' => new OrderResource($order),
@@ -239,9 +258,18 @@ class OrderController extends Controller
             ], 404);
         }
 
-        // Update the total price
+        $product = $orderItem->product; // Assuming each orderItem has a related Product
+        $effectivePrice = $product->effective_price;
+
+        // Calculate the price and delivery charge to remove
+        $itemPriceToRemove = $effectivePrice * $orderItem->quantity;
+        $deliveryChargeToRemove = 2000 * $orderItem->quantity;
+
+        // Update the totals
         $order->update([
-            'total_price' => $order->total_price - ($orderItem->price * $orderItem->quantity),
+            'items_price' => $order->items_price - $itemPriceToRemove,
+            'delivery_charge' => $order->delivery_charge - $deliveryChargeToRemove,
+            'subtotal' => $order->items_price - $itemPriceToRemove + $order->delivery_charge - $deliveryChargeToRemove,
         ]);
 
         // Remove the item
@@ -255,6 +283,7 @@ class OrderController extends Controller
                 'message' => 'Cart is now empty and has been deleted.',
             ], 200);
         }
+
         $order_details = $order->orderItems;
         return response()->json([
             'message' => 'Item removed from cart successfully.',
@@ -262,9 +291,9 @@ class OrderController extends Controller
         ], 200);
     }
 
+
     public function updateCart(UpdateOrderRequest $request)
     {
-
         $userId = auth()->id();
         $validated = $request->validated();
 
@@ -272,7 +301,6 @@ class OrderController extends Controller
         $order = Order::where('user_id', $userId)
             ->where('order_status', 'cart')
             ->first();
-
 
         try {
             $this->authorize('update', $order);
@@ -289,13 +317,14 @@ class OrderController extends Controller
         }
 
         $existingItems = $order->orderItems()->get();
-        $totalPrice = 0;
+        $totalItemPrice = 0;
+        $totalDeliveryCharge = 0;
 
+        // Handle incoming items
         foreach ($incomingItems as $item) {
             $product = Product::find($item['product_id']);
 
             if (!$product) {
-                // If product is not found, return an error message but continue with the loop
                 return response()->json([
                     'message' => "Product with ID {$item['product_id']} does not exist.",
                 ], 404);
@@ -318,25 +347,45 @@ class OrderController extends Controller
                     'price' => $effectivePrice,
                 ]);
             } else {
-                // If the item is not in the cart, return a message but continue with the loop
-                return response()->json([
-                    'message' => "Product with ID {$item['product_id']} does not exist in the cart.",
-                ], 404);
+                // If the item is not in the cart, create a new order item
+                $order->orderItems()->create([
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $effectivePrice,
+                ]);
             }
 
-            // Calculate total price based on updated quantities and prices
-            $totalPrice += $effectivePrice * $item['quantity'];
+            // Calculate total price for the updated item
+            $totalItemPrice += $effectivePrice * $item['quantity'];
+            $totalDeliveryCharge += 2000 * $item['quantity']; // 2000 charge per product quantity
         }
 
-
+        // Handle removed items (items in cart but not in incoming request)
         foreach ($existingItems as $orderItem) {
-            $totalPrice += $orderItem->price * $orderItem->quantity;
+            if (!$incomingItems->where('product_id', $orderItem->product_id)->first()) {
+                // If item is not in incoming request, delete it from the cart
+                $itemPriceToRemove = $orderItem->price * $orderItem->quantity;
+                $deliveryChargeToRemove = 2000 * $orderItem->quantity;
+
+                // Update totals
+                $order->update([
+                    'items_price' => $order->items_price - $itemPriceToRemove,
+                    'delivery_charge' => $order->delivery_charge - $deliveryChargeToRemove,
+                    'subtotal' => $order->items_price - $itemPriceToRemove + $order->delivery_charge - $deliveryChargeToRemove,
+                ]);
+
+                // Delete the removed item
+                $orderItem->delete();
+            }
         }
 
+        // Update the order's total prices
+        $order->update([
+            'items_price' => $totalItemPrice,
+            'delivery_charge' => $totalDeliveryCharge,
+            'subtotal' => $totalItemPrice + $totalDeliveryCharge,
+        ]);
 
-        // Update the order's total price
-        $order->update(['total_price' => $totalPrice]);
-        $order_details = $order->orderItems;
         return response()->json([
             'message' => 'Cart updated successfully.',
             'order_details' => new OrderResource($order),
@@ -345,16 +394,19 @@ class OrderController extends Controller
 
 
 
-
-    public function updatePendingOrder(UpdateOrderRequest $request)
+    public function updatePendingOrder(UpdateOrderRequest $request, $id)
     {
         $userId = auth()->id(); // Assuming the user is authenticated
         $validated = $request->validated();
 
         $incomingItems = collect($validated['order_items']);
-        $order = Order::where('user_id', $userId)
-            ->where('order_status', 'pending')
-            ->first();
+        $order = Order::find($id); // Retrieve the order by its ID only
+
+        if (!$order) {
+            return response()->json([
+                'message' => 'Order not found.',
+            ], 404);
+        }
 
         try {
             $this->authorize('update', $order);
@@ -364,16 +416,24 @@ class OrderController extends Controller
             ]);
         }
 
-        if (!$order) {
-            return response()->json(['message' => 'No pending order found.'], 404);
+        // Check if the order is pending after retrieving it
+        if ($order->order_status !== 'pending') {
+            return response()->json([
+                'message' => 'Order status is not pending.',
+            ], 400);
         }
 
-        $existingItems = $order->orderItems()->get();
-        $totalPrice = 0;
 
+
+        $existingItems = $order->orderItems()->get();
+        $totalItemPrice = 0;
+        $totalDeliveryCharge = 0;
+
+        // Handle incoming items
         foreach ($incomingItems as $item) {
             $product = Product::findOrFail($item['product_id']);
             $orderItem = $existingItems->where('product_id', $item['product_id'])->first();
+            $effectivePrice = $product->effective_price;
 
             if ($orderItem) {
                 // Update quantity and adjust stock
@@ -390,7 +450,7 @@ class OrderController extends Controller
 
                 $orderItem->update([
                     'quantity' => $item['quantity'],
-                    'price' => $product->price,
+                    'price' => $effectivePrice,
                 ]);
             } else {
                 // Add new item
@@ -403,17 +463,19 @@ class OrderController extends Controller
                 $order->orderItems()->create([
                     'product_id' => $product->id,
                     'quantity' => $item['quantity'],
-                    'price' => $product->price,
+                    'price' => $effectivePrice,
                 ]);
 
                 $product->stock_quantity -= $item['quantity'];
                 $product->save();
             }
 
-            $totalPrice += $product->price * $item['quantity'];
+            // Calculate total item price and delivery charge
+            $totalItemPrice += $effectivePrice * $item['quantity'];
+            $totalDeliveryCharge += 2000 * $item['quantity']; // 2000 charge per product quantity
         }
 
-        // Remove items not in the incoming list and adjust stock
+        // Handle removed items (items in cart but not in incoming request)
         $existingItems->whereNotIn('product_id', $incomingItems->pluck('product_id')->toArray())
             ->each(function ($orderItem) {
                 $product = Product::findOrFail($orderItem->product_id);
@@ -423,10 +485,16 @@ class OrderController extends Controller
                 $orderItem->delete();
             });
 
-        $order->update(['total_price' => $totalPrice]);
+        // Update the order's total prices
+        $order->update([
+            'items_price' => $totalItemPrice,
+            'delivery_charge' => $totalDeliveryCharge,
+            'subtotal' => $totalItemPrice + $totalDeliveryCharge,
+        ]);
+
+        // Send notification
         $user = $order->user;
         $user->notify(new OrderStatusChanged($order, 'updated'));
-        $order_details = $order->orderItems;
         return response()->json([
             'message' => 'Pending order updated successfully.',
             'order_details' => new OrderResource($order),

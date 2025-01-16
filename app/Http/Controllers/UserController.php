@@ -22,6 +22,7 @@ use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Log;
+use App\Http\Resources\UserOrdersResource;
 use Illuminate\Http\Client\ResponseSequence;
 
 class UserController extends Controller
@@ -220,7 +221,7 @@ class UserController extends Controller
             ]);
         }
         return response()->json([
-            'orders' => OrderResource::collection($orders)
+            'orders' => UserOrdersResource::collection($orders)
         ]);
     }
 

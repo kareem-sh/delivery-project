@@ -307,7 +307,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"product_id\": 9\r\n\r\n}\r\n",
+					"raw": "{\r\n    \"product_id\": 13\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -733,7 +733,7 @@
 			]
 		},
 		{
-			"name": "update",
+			"name": "update pending order",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1217,7 +1217,7 @@
 					}
 				],
 				"url": {
-					"raw": "http://127.0.0.1:8000/api/orders/33/cancel",
+					"raw": "http://127.0.0.1:8000/api/orders/32/cancel",
 					"protocol": "http",
 					"host": [
 						"127",
@@ -1229,7 +1229,7 @@
 					"path": [
 						"api",
 						"orders",
-						"33",
+						"32",
 						"cancel"
 					]
 				}
@@ -1618,7 +1618,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"order_items\": [\r\n        {\r\n            \"product_id\": 1,\r\n            \"quantity\": 3\r\n        },\r\n        {\r\n            \"product_id\": 2,\r\n            \"quantity\": 1000\r\n        }\r\n    ]\r\n}\r\n",
+					"raw": "{\r\n    \"order_items\": [\r\n        {\r\n            \"product_id\": 9,\r\n            \"quantity\": 3\r\n        },\r\n          {\r\n            \"product_id\": 10,\r\n            \"quantity\": 3\r\n        }\r\n\r\n    ]\r\n}\r\n",
 					"options": {
 						"raw": {
 							"language": "json"

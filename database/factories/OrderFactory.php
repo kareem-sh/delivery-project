@@ -12,10 +12,16 @@ class OrderFactory extends Factory
 
     public function definition()
     {
+        $itemsPrice = $this->faker->randomFloat(2, 50, 500);
+        $deliveryCharge = $this->faker->numberBetween(2000, 5000);
+        $subtotal = $itemsPrice + $deliveryCharge;
+
         return [
-            'user_id' => User::factory(), // Create a new user for the order
-            'total_price' => $this->faker->randomFloat(2, 50, 500), // Random price between 50 and 500
-            'order_status' => $this->faker->randomElement(['cart', 'pending', 'preparing', 'on the way','delivered', 'canceled']),
+            'user_id' => User::factory(),
+            'items_price' => $itemsPrice,
+            'delivery_charge' => $deliveryCharge,
+            'subtotal' => $subtotal,
+            'order_status' => $this->faker->randomElement(['cart', 'pending', 'preparing', 'on the way', 'delivered', 'canceled']),
         ];
     }
 }

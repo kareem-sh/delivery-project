@@ -153,11 +153,11 @@ class OrderController extends Controller
     // Function to add items to the cart
     public function addToCart(StoreOrderRequest $request)
     {
-
         $userId = auth()->id();
         $validated = $request->validated();
         $product = Product::findOrFail($validated['product_id']);
         $quantity = 1;
+
         if (!$product->hasSufficientStock($quantity)) {
             return response()->json([
                 'message' => 'Insufficient stock for the selected product.',
@@ -172,11 +172,12 @@ class OrderController extends Controller
             $order = Order::create([
                 'user_id' => $userId,
                 'order_status' => 'cart',
-                'total_price' => 0,
+                'items_price' => 0,
+                'delivery_charge' => 0,
+                'subtotal' => 0,
             ]);
         }
 
-        // Check if the product is already in the cart
         $existingOrderItem = $order->orderItems()
             ->where('product_id', $product->id)
             ->first();
@@ -187,7 +188,6 @@ class OrderController extends Controller
             ], 400);
         }
 
-        // Add a new item with a quantity of 1
         $effectivePrice = $product->effective_price;
 
         $order->orderItems()->create([
@@ -196,15 +196,21 @@ class OrderController extends Controller
             'price' => $effectivePrice,
         ]);
 
+        $newItemPrice = $effectivePrice * $quantity;
+        $newDeliveryCharge = 2000 * $quantity;
+
         $order->update([
-            'total_price' => $order->total_price + ($effectivePrice * $quantity),
+            'items_price' => $order->items_price + $newItemPrice,
+            'delivery_charge' => $order->delivery_charge + $newDeliveryCharge,
+            'subtotal' => $order->items_price + $newItemPrice + $order->delivery_charge + $newDeliveryCharge,
         ]);
-        $order_details = $order->orderItems;
+
         return response()->json([
             'message' => 'Item added to cart successfully.',
             'order_details' => new OrderResource($order),
         ], 200);
     }
+
 
     public function removeFromCart(Request $request)
     {

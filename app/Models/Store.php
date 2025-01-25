@@ -16,7 +16,7 @@ class Store extends Model
         'latitude',
         'longitude',
         'image',
-        'logo_color',
+        'Logo_color',
     ];
     public function products()
     {

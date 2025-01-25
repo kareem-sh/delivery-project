@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Http\Resources\ArProductResource;
-use App\Http\Resources\ProductResource;
+use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\UpdateProductRequest;
+use App\Http\Resources\Product\ArProductResource;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
@@ -44,8 +44,8 @@ class ProductController extends Controller
     public function updateProduct(UpdateProductRequest $request, $id)
     {
         $product = Product::find($id);
-        $this->authorize('update', [User::class, $product]);
-        $data = $request->validated();
+        //$this->authorize('update', [User::class, $product]);
+        //$data = $request->validated();
         if ($request->hasFile('image_url')) {
             $image_url = str::random(32) . "." . $request->image_url->getClientOriginalExtension();
             Storage::disk('public')->put($image_url, file_get_contents($request->image_url));

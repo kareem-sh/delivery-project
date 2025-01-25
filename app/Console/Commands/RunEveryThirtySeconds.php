@@ -18,6 +18,14 @@ class RunEveryThirtySeconds extends Command
         parent::__construct();
     }
 
+    // Add the sendNotification function
+    private function sendNotification($user, $order, $status)
+    {
+        $notification = new OrderStatusChanged($order, $status);
+        $user->notify($notification);
+        $notification->toFirebase($user);
+    }
+
     public function handle()
     {
         while (true) {
@@ -29,22 +37,19 @@ class RunEveryThirtySeconds extends Command
                 // Check if the order is still pending and update to preparing
                 if ($order->created_at <= now()->subSeconds(30) && $order->order_status == "pending") {
                     $order->update(['order_status' => "preparing"]);
-                    $order->user->notify(new OrderStatusChanged($order, 'preparing'));
-                    Log::info("Order #{$order->id} status updated to 'preparing' and notification sent.");
+                    $this->sendNotification($order->user, $order, 'preparing');
                 }
 
                 // Update from preparing to on the way
                 else if ($order->created_at <= now()->subSeconds(30) && $order->order_status == "preparing") {
                     $order->update(['order_status' => "on the way"]);
-                    $order->user->notify(new OrderStatusChanged($order, 'on the way'));
-                    Log::info("Order #{$order->id} status updated to 'on the way' and notification sent.");
+                    $this->sendNotification($order->user, $order, 'on the way');
                 }
 
                 // Update from on the way to delivered
                 elseif ($order->created_at <= now()->subSeconds(60) && $order->order_status == "on the way") {
                     $order->update(['order_status' => "delivered"]);
-                    $order->user->notify(new OrderStatusChanged($order, 'delivered'));
-                    Log::info("Order #{$order->id} status updated to 'delivered' and notification sent.");
+                    $this->sendNotification($order->user, $order, 'delivered');
                 }
             }
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\Category\CreateCategoryRequest;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

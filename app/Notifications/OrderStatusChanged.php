@@ -2,14 +2,12 @@
 
 namespace App\Notifications;
 
-use Kreait\Firebase\Messaging\CloudMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use App\Models\User;
+use App\Services\FcmService;
 use App\Models\Device;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
-
 
 class OrderStatusChanged extends Notification implements ShouldQueue
 {
@@ -26,21 +24,12 @@ class OrderStatusChanged extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['database', 'firebase'];
+        return ['database'];
     }
 
     public function toArray($notifiable)
     {
-        $statusMessage = match ($this->status) {
-            'preparing' => "Your order #{$this->order->id} is being prepared.",
-            'on the way' => "Your order #{$this->order->id} is on the way!",
-            'delivered' => "Your order #{$this->order->id} has been delivered.",
-            'canceled' => "Your order #{$this->order->id} has been deleted successfully.",
-            'updated' => "Your order #{$this->order->id} has been updated. Please review your order details.",
-            'created' => "Your order #{$this->order->id} has been created and is pending.",
-            default => "Your order #{$this->order->id} status has been updated.",
-        };
-
+        $statusMessage = $this->getStatusMessage();
         return [
             'order_id' => $this->order->id,
             'status' => $this->status,
@@ -53,31 +42,46 @@ class OrderStatusChanged extends Notification implements ShouldQueue
 
     public function toFirebase($notifiable)
     {
-        $firebaseMessaging = app('firebase.messaging');
+        // Get device tokens for the user
         $tokens = Device::where('user_id', $this->order->user_id)->pluck('fcm_token')->toArray();
 
         if (!empty($tokens)) {
-            $statusMessage = match ($this->status) {
-                'preparing' => "Your order #{$this->order->id} is being prepared.",
-                'on the way' => "Your order #{$this->order->id} is on the way!",
-                'delivered' => "Your order #{$this->order->id} has been delivered.",
-                'canceled' => "Your order #{$this->order->id} has been deleted successfully.",
-                'updated' => "Your order #{$this->order->id} has been updated. Please review your order details.",
-                'created' => "Your order #{$this->order->id} has been created and is pending.",
-                default => "Your order #{$this->order->id} status has been updated.",
-            };
+            $statusMessage = $this->getStatusMessage();
 
-            $message = CloudMessage::withTarget('tokens', $tokens)
-                ->withNotification([
-                    'title' => 'Order Status Update',
-                    'body' => $statusMessage,
-                ]);
+            // Use the FcmService to send notifications
+            $fcmService = app(FcmService::class);
 
-            try {
-                $firebaseMessaging->send($message);
-            } catch (\Exception $e) {
-                Log::error("Firebase notification failed: " . $e->getMessage());
+            foreach ($tokens as $token) {
+                try {
+                    // Call the FcmService's sendNotification method
+                    $fcmService->sendNotification(
+                        $token,
+                        'Order Status Update',
+                        $statusMessage,
+                        [
+                            'order_id' => $this->order->id,
+                            'status' => $this->status,
+                        ]
+                    );
+
+                    Log::info("Notification sent to token: {$token}");
+                } catch (\Exception $e) {
+                    Log::error("Failed to send notification to token {$token}: " . $e->getMessage());
+                }
             }
         }
+    }
+
+    private function getStatusMessage()
+    {
+        return match ($this->status) {
+            'preparing' => "Your order #{$this->order->id} is being prepared.",
+            'on the way' => "Your order #{$this->order->id} is on the way!",
+            'delivered' => "Your order #{$this->order->id} has been delivered.",
+            'canceled' => "Your order #{$this->order->id} has been canceled successfully.",
+            'updated' => "Your order #{$this->order->id} has been updated. Please review your order details.",
+            'created' => "Your order #{$this->order->id} has been created and is pending.",
+            default => "Your order #{$this->order->id} status has been updated.",
+        };
     }
 }

@@ -10,6 +10,11 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StoreController;
+use App\Models\Order;
+use App\Notifications\OrderStatusChanged;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\TestNotification;
+use App\Services\FcmService;
 
 Route::prefix('/auth')->group(function () {
     //Take the fcm token and check the need for the user phone number
@@ -81,3 +86,13 @@ Route::controller(ProductController::class)->group(function () {
     Route::get('products/range/{startRange}/{endRange}', 'priceRange')->middleware('auth:sanctum');
 })->middleware('auth:sanctum');
 Route::apiResource('products', ProductController::class)->middleware('auth:sanctum');
+
+Route::get('test', function () {
+    $order = Order::find(1);
+    $user = $order->user;
+    $user->notify(new OrderStatusChanged($order, 'canceled'));
+
+    // Trigger Firebase notification manually after calling notify()
+    $notification = new OrderStatusChanged($order, 'canceled');
+    $notification->toFirebase($user); // Manually call toFirebase
+});

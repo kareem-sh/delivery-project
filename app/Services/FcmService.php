@@ -30,7 +30,7 @@ class FcmService
         try {
             $this->messaging->send($message);
             return response()->json(['success' => true], 200);
-        } catch(MessagingException $e) {
+        } catch (MessagingException $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

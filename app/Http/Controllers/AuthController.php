@@ -6,7 +6,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Services\TwilioService;
-use App\Http\Requests\handlePhoneNumberRequest;
+use App\Http\Requests\Auth\handlePhoneNumberRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Device;
 
@@ -25,23 +25,23 @@ class AuthController extends Controller
             'phone_number' => 'required|string',
             'fcm_token' => 'required|string',
         ]);
-    
+
         $phoneNumber = $request->phone_number;
         $fcmToken = $request->fcm_token;
-    
+
         $user = User::where('phone_number', $phoneNumber)->first();
-    
+
         if ($user) {
             // Update or add the device's FCM token
             $user->devices()->updateOrCreate(
                 ['fcm_token' => $fcmToken]
             );
-    
+
             // Send OTP
             $user->is_verified = false;
             $user->save();
             $this->twilioService->sendOtp($phoneNumber);
-    
+
             return response()->json([
                 'message' => 'OTP sent for verification.',
             ]);
@@ -51,19 +51,19 @@ class AuthController extends Controller
                 'phone_number' => $phoneNumber,
                 'is_verified' => false,
             ]);
-    
+
             $newUser->devices()->create([
                 'fcm_token' => $fcmToken,
             ]);
-    
+
             $this->twilioService->sendOtp($phoneNumber);
-    
+
             return response()->json([
                 'message' => 'OTP sent for verification.',
             ]);
         }
     }
-    
+
 
 
     public function verify(Request $request)
@@ -151,17 +151,16 @@ class AuthController extends Controller
             'fcm_token' => 'required|string',
         ]);
         $user = Auth::user();
-    
+
         $device = Device::where('user_id', $user->id)
-                        ->where('fcm_token', $request->fcm_token)
-                        ->first();
-    
+            ->where('fcm_token', $request->fcm_token)
+            ->first();
+
         if ($device) {
             $device->delete();
-        } 
+        }
         $currentToken = auth()->user()->currentAccessToken()->delete();
-    
+
         return response()->json(['message' => 'Logged out successfully ']);
-       
- } 
+    }
 }

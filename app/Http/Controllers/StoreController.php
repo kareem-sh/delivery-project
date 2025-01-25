@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateStoreRequest;
-use App\Http\Requests\UpdateStoreRequest;
-use App\Http\Resources\ArProductResource;
-use App\Http\Resources\ArStoreResource;
-use App\Http\Resources\ProductResource;
-use App\Http\Resources\StoreResource;
+use App\Http\Requests\Store\CreateStoreRequest;
+use App\Http\Requests\Store\UpdateStoreRequest;
+use App\Http\Resources\Product\ArProductResource;
+use App\Http\Resources\Store\ArStoreResource;
+use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\Store\StoreResource;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Store;
@@ -31,7 +31,7 @@ class StoreController extends Controller
     }
     public function store(CreateStoreRequest $request)
     {
-        $this->authorize('create', User::class);
+        // $this->authorize('create', User::class);
         $data = $request->validated();
         if ($request->hasFile('image')) {
             $image = str::random(32) . "." . $request->image->getClientOriginalExtension();

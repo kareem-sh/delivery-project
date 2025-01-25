@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\OrderItemResource;
+use App\Http\Resources\Order\OrderItemResource;
 use App\Notifications\OrderStatusChanged;
 use App\Models\Order;
 use App\Models\SubOrder;
@@ -10,9 +10,9 @@ use App\Models\Product;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
-use App\Http\Resources\OrderResource;
+use App\Http\Requests\Order\StoreOrderRequest;
+use App\Http\Requests\Order\UpdateOrderRequest;
+use App\Http\Resources\Order\OrderResource;
 use App\Models\User;
 use Exception;
 use Log;
@@ -66,7 +66,7 @@ class OrderController extends Controller
         $order->update(['order_status' => 'canceled']);
 
         $user = $order->user;
-        $user->notify(new OrderStatusChanged($order, 'canceled'));
+        $this->sendNotification($user, $order, 'canceled');
 
         return response()->json([
             'message' => 'Order canceled successfully.',
@@ -142,7 +142,7 @@ class OrderController extends Controller
 
         // Send notification to the user
         $user = $order->user;
-        $user->notify(new OrderStatusChanged($order, 'created'));
+        $this->sendNotification($user, $order, 'created');
 
         // Return the updated order data
         return response()->json([
@@ -494,10 +494,17 @@ class OrderController extends Controller
 
         // Send notification
         $user = $order->user;
-        $user->notify(new OrderStatusChanged($order, 'updated'));
+        $this->sendNotification($user, $order, 'updated');
         return response()->json([
             'message' => 'Pending order updated successfully.',
             'order_details' => new OrderResource($order),
         ], 200);
+    }
+
+    private function sendNotification($user, $order, $status)
+    {
+        $notification = new OrderStatusChanged($order, $status);
+        $user->notify($notification);
+        $notification->toFirebase($user);
     }
 }

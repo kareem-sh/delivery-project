@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateFavoriteRequest;
-use App\Http\Resources\FavoriteResource;
-use App\Http\Resources\NotificationResource;
+use App\Http\Requests\Favorite\CreateFavoriteRequest;
+use App\Http\Resources\Favorite\FavoriteResource;
+use App\Http\Resources\Notification\NotificationResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use App\Services\TwilioService;
-use App\Http\Resources\ProductResource;
-use App\Http\Resources\ArProductResource;
-use App\Http\Requests\UpdateUserRequest;
-use App\Http\Requests\CreateUserRequest;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Product\ProductResource;
+use App\Http\Resources\Product\ArProductResource;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Requests\User\CreateUserRequest;
+use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\User\UserResource;
 use Exception;
 use App\Models\Product;
 use App\Models\Order;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Log;
-use App\Http\Resources\UserOrdersResource;
 use Illuminate\Http\Client\ResponseSequence;
 
 class UserController extends Controller
@@ -221,7 +220,7 @@ class UserController extends Controller
             ]);
         }
         return response()->json([
-            'orders' => UserOrdersResource::collection($orders)
+            'orders' => OrderResource::collection($orders)
         ]);
     }
 
